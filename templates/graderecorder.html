@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Grade Recorder</title>
+<link rel="stylesheet" type="text/css"
+	href="/static/stylesheets/graderecorder.css" />
+</head>
+<body>
+	<div style="overflow:hidden;">
+		Signed in as {{user_email}}
+		<a style="display:block; float: right;" href="{{logout_link}}"> Sign out</a>
+	</div>
+	<hr>
+	<h1>Add an assignment</h1>
+	<form action="" method="post">
+		<table>
+			<tr>
+				<td>Assignment Name:</td>
+				<td><input type="text" name="assignment_name"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input style="float: right;" type="submit" value="Submit"></td>
+			</tr>
+		</table>
+		<input type="text" name="type" value="Assignment"
+			style="display: none;">
+	</form>
+	<hr>
+	<h1>Add a grade entry</h1>
+	<form action="" method="post">
+		<table>
+			<tr>
+				<td>Assignment:</td>
+				<td>
+				<select name="assignment_key">
+					{% for assignment in assignments %}
+						<option value="{{assignment.key_urlsafe }}">{{assignment.assignment_name}}</option>
+					{% endfor %}
+				</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Student Name:</td>
+				<td>
+				{% if use_hardcoded_roster %}
+					<select name="student_name">
+						<option>Team 01</option>
+						<option>Team 02</option>
+						<option>Team 03</option>
+						<option>Team 04</option>
+						<option>Team 05</option>
+						<option>Team 06</option>
+						<option>Team 07</option>
+						<option>Team 08</option>
+						<option>Team 09</option>
+					</select>
+				{% else %}
+					<input type="text" name="student_name">
+				{% endif %}
+				</td>
+			</tr>
+			<tr>
+				<td>Score:</td>
+				<td><input type="text" name="score" value="100"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input style="float: right;" type="submit" value="Submit"></td>
+			</tr>
+		</table>
+		<input type="text" name="type" value="GradeEntry" style="display: none;">
+	</form>
+	<hr>
+	<h1>Grades</h1>
+	<div style="width: 350px;">
+	<ul>
+		{% for assignment_with_grades in assignments_with_grades %}
+		<li>
+			<b>{{assignment_with_grades.assignment_name}}</b>
+			<ul>
+				{% for grade_entry in assignment_with_grades.grade_entries %}
+					<li style="overflow: hidden">{{grade_entry.student_name}} <span style="float: right;">{{grade_entry.score}}</span></li>
+				{% endfor %}
+			</ul>
+		</li>
+		{% endfor %}
+	</ul>
+	</div>
+</body>
+</html>

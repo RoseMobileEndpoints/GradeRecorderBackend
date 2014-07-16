@@ -1,0 +1,16 @@
+body {
+	background: url('/static/images/noise.jpg');
+	font: 14px Helvetica, serif;
+}
+
+input[name=quote] {
+	width: 300px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.movie-title {
+	font-style: italic;
+}
