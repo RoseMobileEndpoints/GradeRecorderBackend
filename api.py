@@ -89,7 +89,7 @@ class GradeRecorderApi(protorpc.remote.Service):
         if not grade_entry.from_datastore:
             raise endpoints.NotFoundException("No grade entry found for the given key")
         grade_entry.key.delete()
-        return GradeEntry(student_name="deleted")
+        return GradeEntry()
 
 
 app = endpoints.api_server([GradeRecorderApi], restricted=False)
