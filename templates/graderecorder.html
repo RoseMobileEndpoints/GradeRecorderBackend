@@ -32,7 +32,7 @@
           <li><a id='display-add-grade-entry-modal' href="#">Add Grade Entry</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/">{{user_email}}</a></li>
+          <li><a href="#">{{user_email}}</a></li>
           <li><a href="{{ logout_url }}">Sign out</a></li>
         </ul>
       </div>
@@ -76,35 +76,6 @@
 <!-- ========================== Modal data entry dialogs ========================== -->
 
   <!-- Modal -->
-  <div id='add-assignment-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Assignment" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="assignment-modal-title">Add an Assignment</h4>
-        </div>
-        <form action="" method="POST">
-          <div class="modal-body">
-            <div class="input-group">
-              <span class="input-group-addon">Name: </span>
-              <input name="assignment_name" type="text" class="form-control" placeholder="Assignment name">
-            </div>
-            <input type="hidden" name="type" value="Assignment">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">OK</button>
-          </div>
-        </form>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-  </div>
-  <!-- /.modal -->
-
-
-  <!-- Modal -->
   <div id='add-student-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Assignment" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -123,10 +94,42 @@
               <input name="last_name" type="text" class="form-control" placeholder="Last name">
             </div>
             <div class="input-group">
+              <span class="input-group-addon">User: </span>
+              <input name="rose_username" type="text" class="form-control" placeholder="Rose-Hulman username">
+            </div>
+            <div class="input-group">
               <span class="input-group-addon">Team: </span>
               <input name="team" type="text" class="form-control" placeholder="Team (if applicable)">
             </div>
             <input type="hidden" name="type" value="Student">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">OK</button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+  
+  <!-- Modal -->
+  <div id='add-assignment-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Assignment" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="assignment-modal-title">Add an Assignment</h4>
+        </div>
+        <form action="" method="POST">
+          <div class="modal-body">
+            <div class="input-group">
+              <span class="input-group-addon">Name: </span>
+              <input name="assignment_name" type="text" class="form-control" placeholder="Assignment name">
+            </div>
+            <input type="hidden" name="type" value="Assignment">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -163,7 +166,7 @@
               <span class="select-label">Student: </span>
               <select name="student_key">
                 {% for student in students %}
-                  <option value="{{ student.key.urlsafe() }}">{{ student.first_name }} {{ student.last_name}}, {{ student.team }}</option>
+                  <option value="{{ student.key.urlsafe() }}">{{ student.first_name }} {{ student.last_name}}</option>
                 {% endfor %}
               </select>
             </div>
@@ -204,6 +207,7 @@
           { "title": "Assignment", "class": ""},
           { "title": "First Name", "class": ""},
           { "title": "Last Name", "class": ""},
+          { "title": "Username", "class": ""},
           { "title": "Team", "class": "center"},
           { "title": "Score", "class": "center"}
         ];
@@ -213,6 +217,7 @@
              "{{ grade_entry.assignment.name }}",
              "{{ grade_entry.student.first_name }}",
              "{{ grade_entry.student.last_name }}",
+             "{{ grade_entry.student.rose_username }}",
              "{{ grade_entry.student.team }}",
              "{{ grade_entry.score }}"
             ]

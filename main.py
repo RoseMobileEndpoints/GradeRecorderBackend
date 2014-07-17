@@ -66,6 +66,7 @@ class MainHandler(webapp2.RequestHandler):
             new_student = Student(parent=get_parent_key(user),
                                   first_name=self.request.get('first_name'),
                                   last_name=self.request.get('last_name'),
+                                  rose_username=self.request.get('rose_username'),
                                   team=self.request.get('team'))
             new_student.put()
         elif (self.request.get('type') == 'Assignment'):
