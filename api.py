@@ -6,8 +6,9 @@ Created on Jul 16, 2014
 
 import protorpc
 import endpoints
-from models import Assignment, GradeEntry
+from models import Student, Assignment, GradeEntry
 from google.appengine.ext import ndb
+import main
 
 # For authentication
 WEB_CLIENT_ID = "3607967651-5nqg6qis8ivo294oenp8nff9k35dp70h.apps.googleusercontent.com"
@@ -19,18 +20,28 @@ IOS_CLIENT_ID = ""
                allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID, WEB_CLIENT_ID, ANDROID_CLIENT_ID, IOS_CLIENT_ID])
 class GradeRecorderApi(protorpc.remote.Service):
 
-    @Assignment.query_method(user_required=True, query_fields=("limit", "order", "pageToken"), 
+    @Student.query_method(user_required=True, query_fields=("limit", "order", "pageToken"), 
+                          name="student.list", path="student/list", http_method="GET")
+    def student_list(self, query):
+        """ List all the students for this user """
+        user = endpoints.get_current_user()
+        students = Student.query(ancestor=main.get_parent_key(user)).order(Student.rose_username)
+        return students 
+    
+    @Assignment.query_method(user_required=True, query_fields=("limit", "pageToken"), 
                              name="assignment.list", path="assignment/list", http_method="GET")
     def assignment_list(self, query):
         """ List all the assignments owned by the user """
-        filtered_query = query.filter(Assignment.owner_email == endpoints.get_current_user().email().lower())
-        return filtered_query
-
+        user = endpoints.get_current_user()
+        assignments = Assignment.query(ancestor=main.get_parent_key(user)).order(Assignment.name)
+        return assignments
+    
     @GradeEntry.query_method(user_required=True, query_fields=("limit", "order", "pageToken", "assignment_key"),
                              name="gradeentry.list", path="gradeentry/list/{assignment_key}", http_method="GET")
     def gradeentry_list(self, query):
         """ List all the grade entries for the given assignment key """
         return query
+
 
     @Assignment.method(user_required= True, name="assignment.insert", path="assignment/insert", http_method="POST")
     def assignment_insert(self, assignment):

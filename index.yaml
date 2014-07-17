@@ -20,6 +20,11 @@ indexes:
   properties:
   - name: name
 
+- kind: Assignment
+  ancestor: yes
+  properties:
+  - name: rose_username
+
 - kind: GradeEntry
   properties:
   - name: assignment_id
@@ -31,6 +36,11 @@ indexes:
   properties:
   - name: last_name
   - name: first_name
+
+- kind: Student
+  ancestor: yes
+  properties:
+  - name: rose_username
 
 - kind: Student
   ancestor: yes
