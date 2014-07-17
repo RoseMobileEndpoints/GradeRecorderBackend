@@ -20,6 +20,7 @@ IOS_CLIENT_ID = ""
                allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID, WEB_CLIENT_ID, ANDROID_CLIENT_ID, IOS_CLIENT_ID])
 class GradeRecorderApi(protorpc.remote.Service):
 
+    # List methods
     @Student.query_method(user_required=True, query_fields=("limit", "order", "pageToken"), 
                           name="student.list", path="student/list", http_method="GET")
     def student_list(self, query):
@@ -43,16 +44,15 @@ class GradeRecorderApi(protorpc.remote.Service):
         return query
 
 
+    # Insert methods
     @Assignment.method(user_required= True, name="assignment.insert", path="assignment/insert", http_method="POST")
     def assignment_insert(self, assignment):
         """ Add or update an assignment owned by the given user """
         if assignment.from_datastore:
             assignment_with_parent = assignment
         else:
-            email = endpoints.get_current_user().email().lower()
-            assignment_with_parent = Assignment(parent = ndb.Key("Entity", email), 
-                                                name = assignment.name,
-                                                owner_email = email)
+            assignment_with_parent = Assignment(parent = main.get_parent_key(endpoints.get_current_user()), 
+                                                name = assignment.name) 
         assignment_with_parent.put()
         return assignment_with_parent 
     
@@ -62,13 +62,14 @@ class GradeRecorderApi(protorpc.remote.Service):
         if grade_entry.from_datastore:
             grade_entry_with_parent = grade_entry
         else:
-            grade_entry_with_parent = GradeEntry(parent= grade_entry.assignment_key, 
-                                                 student_name = grade_entry.student_name, 
+            grade_entry_with_parent = GradeEntry(parent = grade_entry.assignment_key, 
                                                  score = grade_entry.score, 
+                                                 student_key = grade_entry.student_key, 
                                                  assignment_key = grade_entry.assignment_key) 
         grade_entry_with_parent.put()
         return grade_entry_with_parent
 
+    # Delete methods
     @Assignment.method(user_required= True, request_fields = ("entityKey",), 
                        name="assignment.delete", path="assignment/delete/{entityKey}", http_method="DELETE")
     def assignment_delete(self, assignment):
