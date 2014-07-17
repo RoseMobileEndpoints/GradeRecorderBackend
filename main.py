@@ -109,7 +109,7 @@ def get_assignments(user):
 
 def get_students(user):
     """ Gets all of the students for this user and makes a key map for them. """
-    students = Student.query(ancestor=get_parent_key(user)).order(Student.last_name, Student.first_name,).fetch()
+    students = Student.query(ancestor=get_parent_key(user)).order(Student.rose_username,).fetch()
     students_map = {}
     for student in students:
         students_map[student.key.urlsafe()] = student
