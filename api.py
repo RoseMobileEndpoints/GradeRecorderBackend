@@ -11,11 +11,11 @@ from google.appengine.ext import ndb
 
 # For authentication
 WEB_CLIENT_ID = "3607967651-5nqg6qis8ivo294oenp8nff9k35dp70h.apps.googleusercontent.com"
-ANDROID_CLIENT_ID = ""
+ANDROID_CLIENT_ID = "3607967651-c2e2v3mvtktm0mt7l08m3qafvcg7m7me.apps.googleusercontent.com"
 IOS_CLIENT_ID = ""
 
 @endpoints.api(name="graderecorder", version="v1", description="Grade Recorder API",
-               hostname="boutell-grade-recorder-2", audiences=[WEB_CLIENT_ID],
+               hostname="boutell-grade-recorder-2.appspot.com", audiences=[WEB_CLIENT_ID],
                allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID, WEB_CLIENT_ID, ANDROID_CLIENT_ID, IOS_CLIENT_ID])
 class GradeRecorderApi(protorpc.remote.Service):
 
