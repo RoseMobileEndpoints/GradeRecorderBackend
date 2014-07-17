@@ -7,7 +7,6 @@ Created on Jul 16, 2014
 import protorpc
 import endpoints
 from models import Student, Assignment, GradeEntry
-from google.appengine.ext import ndb
 import main
 
 # For authentication
