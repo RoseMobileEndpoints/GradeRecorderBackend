@@ -1,4 +1,4 @@
-GradeRecorderWebApp
+GradeRecorderBackend
 ===================
 
-Web app only for GradeRecorder
+GradeRecorder backend (web app and model)
