@@ -114,7 +114,7 @@
     <!-- /.modal-dialog -->
   </div>
   <!-- /.modal -->
-  
+
   <!-- Modal -->
   <div id='add-assignment-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Assignment" aria-hidden="true">
     <div class="modal-dialog">
@@ -197,14 +197,16 @@
   <script src="/static/js/dataTables.bootstrap.js"></script>
   <script src="/static/js/offcanvas.js"></script>
   <script>
-    var assignments_name_map = {
-                                {% for assignment in assignments %}
-                                  "{{ assignment.key.urlsafe() }}": "{{ assignment.name }}"
-                                  {% if not loop.last %},{% endif %}
-                                {% endfor %}
-                              };
         var columns = [
-          { "title": "Assignment", "class": ""},
+          { "title": "Assignment",
+            "class": "",
+            "render": function(data, type, full, meta) {
+              if (type == "filter") {
+                return data.assignemnt_key + " " + data.assignemnt_name;
+              }
+              return data.assignemnt_name;
+            }
+          },
           { "title": "First Name", "class": ""},
           { "title": "Last Name", "class": ""},
           { "title": "Username", "class": ""},
@@ -214,7 +216,9 @@
         var data = [
           {% for grade_entry in grade_entries %}
             [
-             "{{ grade_entry.assignment.name }}",
+             { "assignemnt_name": "{{grade_entry.assignment.name }}",
+               "assignemnt_key": "{{ grade_entry.assignment_key.urlsafe() }}"
+             },
              "{{ grade_entry.student.first_name }}",
              "{{ grade_entry.student.last_name }}",
              "{{ grade_entry.student.rose_username }}",
