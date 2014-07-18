@@ -76,8 +76,10 @@ class MainHandler(webapp2.RequestHandler):
         elif (self.request.get('type') == 'SingleGradeEntry'):
             assignment_key = ndb.Key(urlsafe=self.request.get('assignment_key'))
             student_key = ndb.Key(urlsafe=self.request.get('student_key'))
+            student = student_key.get()
             score = int(self.request.get('score'))
             new_grade_entry = GradeEntry(parent=assignment_key,
+                                         id=student.rose_username,
                                          assignment_key=assignment_key,
                                          student_key=student_key,
                                          score=score)

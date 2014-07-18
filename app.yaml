@@ -1,4 +1,4 @@
-application: boutell-grade-recorder-2
+application: me430-grade-recorder
 version: 1
 runtime: python27
 api_version: 1
