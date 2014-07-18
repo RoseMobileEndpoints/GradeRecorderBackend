@@ -39,14 +39,12 @@ rh.gr.enableButtons = function() {
 	});
 };
 
+
 rh.gr.updateTable = function() {
-
-  console.log("Consider: Filter instead of search")
-  console.log("TODO: Use the KEY instead!" + rh.gr.currentAssignmentKey)
-
   var table = $('#grade-entry-table').DataTable();
-  table.search(assignments_name_map[rh.gr.currentAssignmentKey]).draw();
-}
+  table.search(rh.gr.currentAssignmentKey).draw();
+};
+
 
 // Navigation of grade entries.
 $(document).ready(function(){
