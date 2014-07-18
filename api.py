@@ -63,7 +63,7 @@ class GradeRecorderApi(protorpc.remote.Service):
         if grade_entry.from_datastore:
             grade_entry_with_parent = grade_entry
         else:
-            student = ndb.Key(urlsafe=grade_entry.student_key).get()
+            student = grade_entry.student_key.get()
             grade_entry_with_parent = GradeEntry(parent = grade_entry.assignment_key,
                                                  id = student.rose_username,
                                                  score = grade_entry.score,
