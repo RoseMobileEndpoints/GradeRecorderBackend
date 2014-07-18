@@ -1,4 +1,4 @@
-application: fisherds-grade-recorder
+application: yourusername-grade-recorder # Change to your username
 version: 1
 runtime: python27
 api_version: 1
@@ -27,4 +27,3 @@ libraries:
 # - name: pycrypto
 #  version: "2.6"
 # Endpoints library
-  
