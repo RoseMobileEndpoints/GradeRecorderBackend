@@ -91,6 +91,7 @@ class MainHandler(webapp2.RequestHandler):
             student_query = Student.query(team=team)
             for student in student_query:
                 new_grade_entry = GradeEntry(parent=assignment_key,
+                                             id=student.rose_username,
                                              assignment_key=assignment_key,
                                              student_key=student.key,
                                              score=score)
