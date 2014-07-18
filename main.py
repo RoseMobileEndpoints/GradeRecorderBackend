@@ -55,7 +55,7 @@ class MainHandler(webapp2.RequestHandler):
                                              'grade_entries': grade_entries,
                                              'assignment_badge_data': assignment_badge_data,
                                              'user_email': user.email(),
-                                             'logout_link': users.create_logout_url("/")}))
+                                             'logout_url': users.create_logout_url("/")}))
 
     def post(self):
         user = users.get_current_user()
