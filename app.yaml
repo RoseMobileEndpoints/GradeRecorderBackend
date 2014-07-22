@@ -1,4 +1,4 @@
-application: yourusername-grade-recorder # Change to your username
+application: boutell-grade-recorder 
 version: 1
 runtime: python27
 api_version: 1
@@ -14,6 +14,8 @@ handlers:
   static_dir: static
 
 # Endpoints placeholder
+- url: /_ah/spi/.*
+  script: api.app
 
 #Main handler
 - url: .*
@@ -24,6 +26,8 @@ libraries:
   version: "2.5.2"
 - name: jinja2
   version: "2.6"
-# - name: pycrypto
-#  version: "2.6"
+- name: pycrypto
+  version: "2.6"
 # Endpoints library
+- name: endpoints
+  version: latest
