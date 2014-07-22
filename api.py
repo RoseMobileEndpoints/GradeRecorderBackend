@@ -9,8 +9,8 @@ import protorpc
 from models import Student, Assignment, GradeEntry
 import main
 
-WEB_CLIENT_ID = "972418852608-i9ksl96e4pef0kdlmdjlhq6df3utqkjr.apps.googleusercontent.com"
-ANDROID_CLIENT_ID = ""
+WEB_CLIENT_ID =     "972418852608-i9ksl96e4pef0kdlmdjlhq6df3utqkjr.apps.googleusercontent.com"
+ANDROID_CLIENT_ID = "972418852608-uhilfkvrdkb5thfe23rocrtjngenr9cp.apps.googleusercontent.com"
 IOS_CLIENT_ID = ""
 
 @endpoints.api(name="graderecorder", version="v1", description="Grade Recorder API", hostname="boutell-grade-recorder.appspot.com", 
