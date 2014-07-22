@@ -36,7 +36,9 @@ rh.gr.enableButtons = function() {
 	$('#display-add-grade-entry-modal').click(function() {
 		$('#add-grade-entry-modal').on('shown.bs.modal', function () {
 		  // TODO: Attempt to guess the next student needing a grade.
-		  $("select[name=assignment_key]").val(rh.gr.currentAssignmentKey);
+		  if (rh.gr.currentAssignmentKey.length > 0) {
+		    $("select[name=assignment_key]").val(rh.gr.currentAssignmentKey);
+		  }
       $("input[name='score']").focus();
     }).modal('show');
 	});
@@ -52,7 +54,7 @@ rh.gr.updateTable = function() {
 // Navigation of grade entries.
 $(document).ready(function(){
   rh.gr.enableButtons();
-	rh.gr.currentAssignmentKey = $('.sidebar-link:first-child').attr('id');
+	rh.gr.currentAssignmentKey = $('.sidebar-link.active').attr('id');
 	rh.gr.updateTable();
 	$('.sidebar-link').click(function() {
 		// Update the sidebar

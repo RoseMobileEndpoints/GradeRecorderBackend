@@ -1,4 +1,6 @@
-
+.sidebar-link:first-child {
+	background: #eee;
+}
 .table-wrapper {
   padding: 10px 30px 5px;
   border: 2px solid #ccc;

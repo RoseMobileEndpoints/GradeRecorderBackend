@@ -51,17 +51,19 @@ class MainHandler(webapp2.RequestHandler):
                 metadata.append("na")  # Average is NA
         template = jinja_env.get_template("templates/graderecorder.html")
         self.response.out.write(template.render({'assignments': assignments,
-                                             'students': students,
-                                             'grade_entries': grade_entries,
-                                             'assignment_badge_data': assignment_badge_data,
-                                             'user_email': user.email(),
-                                             'logout_url': users.create_logout_url("/")}))
+                                                 'active_assignemnt': self.request.get('active_assignemnt'),
+                                                 'students': students,
+                                                 'grade_entries': grade_entries,
+                                                 'assignment_badge_data': assignment_badge_data,
+                                                 'user_email': user.email(),
+                                                 'logout_url': users.create_logout_url("/")}))
 
     def post(self):
         user = users.get_current_user()
         if not user:
             self.redirect(users.create_login_url(self.request.uri))
             return
+        next_active_assignemnt = None
         if (self.request.get('type') == 'Student'):
             new_student = Student(parent=get_parent_key(user),
                                   first_name=self.request.get('first_name'),
@@ -73,6 +75,7 @@ class MainHandler(webapp2.RequestHandler):
             new_assignment = Assignment(parent=get_parent_key(user),
                                         name=self.request.get('assignment_name'))
             new_assignment.put()
+            next_active_assignemnt = new_assignment.key.urlsafe()
         elif (self.request.get('type') == 'SingleGradeEntry'):
             assignment_key = ndb.Key(urlsafe=self.request.get('assignment_key'))
             student_key = ndb.Key(urlsafe=self.request.get('student_key'))
@@ -84,6 +87,7 @@ class MainHandler(webapp2.RequestHandler):
                                          student_key=student_key,
                                          score=score)
             new_grade_entry.put()
+            next_active_assignemnt = assignment_key.urlsafe()
         elif (self.request.get('type') == 'TeamGradeEntry'):
             assignment_key = ndb.Key(urlsafe=self.request.get('assignment_key'))
             score = int(self.request.get('score'))
@@ -96,7 +100,11 @@ class MainHandler(webapp2.RequestHandler):
                                              student_key=student.key,
                                              score=score)
                 new_grade_entry.put()
-        self.redirect('/')
+            next_active_assignemnt = assignment_key.urlsafe()
+        if next_active_assignemnt:
+          self.redirect("/?active_assignemnt=" + next_active_assignemnt)
+        else:
+          self.redirect("/")
 
 def get_parent_key(user):
     return ndb.Key("Entity", user.email().lower())
