@@ -179,7 +179,7 @@
               <div class="col-sm-9">
                 <select name="assignment_key" class="form-control">
                   {% for assignment in assignments %}
-                    <option value="{{assignment.key.urlsafe() }}">{{assignment.name}}</option>
+                    <option value="{{ assignment.key.urlsafe() }}">{{assignment.name}}</option>
                   {% endfor %}
                 </select>
               </div>

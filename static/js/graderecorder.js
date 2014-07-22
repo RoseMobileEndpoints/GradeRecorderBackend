@@ -21,21 +21,24 @@ rh.gr.currentAssignmentKey = null;
  * Enables the button callbacks in the UI.
  */
 rh.gr.enableButtons = function() {
-
-  $('#display-add-assignment-modal').click(function() {
-    $('#add-assignment-modal').modal('show');
+  $('#display-add-student-modal').click(function() {
+    $('#add-student-modal').on('shown.bs.modal', function () {
+      $("input[name='first_name']").focus();
+    }).modal('show');
   });
 
-
-  $('#display-add-student-modal').click(function() {
-    $('#add-student-modal').modal('show');
+  $('#display-add-assignment-modal').click(function() {
+    $('#add-assignment-modal').on('shown.bs.modal', function () {
+      $("input[name='assignment_name']").focus();
+    }).modal('show');
   });
 
 	$('#display-add-grade-entry-modal').click(function() {
-		// Prepare the grade entry modal
-	  // TODO: Select the assignment based on what the user is viewing.
-
-		$('#add-grade-entry-modal').modal('show');
+		$('#add-grade-entry-modal').on('shown.bs.modal', function () {
+		  // TODO: Attempt to guess the next student needing a grade.
+		  $("select[name=assignment_key]").val(rh.gr.currentAssignmentKey);
+      $("input[name='score']").focus();
+    }).modal('show');
 	});
 };
 
