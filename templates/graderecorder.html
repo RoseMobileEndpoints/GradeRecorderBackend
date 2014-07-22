@@ -56,7 +56,7 @@
       </div>
       <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
         <div id="assignment-sidebar" class="list-group">
-          <a href="#" id="" class="sidebar-link list-group-item {% if not active_assignemnt %}active{% endif %}">All Assignments</a>
+          <a href="#" id="" class="sidebar-link list-group-item {% if not active_assignemnt %}active{% endif %}">Show all assignments</a>
           {% for assignment in assignments %}
             <a href="#" id="{{ assignment.key.urlsafe() }}" class="sidebar-link list-group-item {% if active_assignemnt == assignment.key.urlsafe() %}active{% endif %}">
               <span class="badge">
