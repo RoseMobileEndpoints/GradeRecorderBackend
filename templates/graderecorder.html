@@ -216,7 +216,7 @@
   <script>
         var columns = [
           { "title": "Assignment",
-            "class": "",
+            "class": "visible-md visible-lg",
             "render": function(data, type, full, meta) {
               if (type == "filter") {
                 return data.assignemnt_key + " " + data.assignemnt_name;
@@ -226,7 +226,7 @@
           },
           { "title": "First Name", "class": ""},
           { "title": "Last Name", "class": ""},
-          { "title": "Username", "class": ""},
+          { "title": "Username", "class": "hidden-xs"},
           { "title": "Team", "class": "text-center"},
           { "title": "Score", "class": "text-center"}
         ];
