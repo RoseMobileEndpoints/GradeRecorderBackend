@@ -42,6 +42,24 @@ rh.gr.enableButtons = function() {
       $("input[name='score']").focus();
     }).modal('show');
 	});
+
+	// Within Grade entry modal.
+	$('.btn-toggle').click(function() {
+ 	  // Change which button is active primary vs default
+	  $(this).find('.btn').toggleClass('active');
+    if ($(this).find('.btn-primary').size()>0) {
+      $(this).find('.btn').toggleClass('btn-primary');
+    }
+    $(this).find('.btn').toggleClass('btn-default');
+  });
+
+  $("#add-grade-by-student").click(function() {
+    console.log("TODO: Switch to grade entry by student mode.");
+  });
+
+  $("#add-grade-by-team").click(function() {
+    console.log("TODO: Switch to grade entry by team mode.");
+  });
 };
 
 

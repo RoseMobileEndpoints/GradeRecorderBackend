@@ -11,3 +11,11 @@
 input[type="search"] {
 	margin-left: 5px;
 }
+
+.btn-toggle {
+	padding-right: 10px;
+}
+
+.btn-toggle .btn-default {
+	color: #ccc;
+}
