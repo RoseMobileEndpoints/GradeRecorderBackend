@@ -34,7 +34,7 @@ class MainHandler(webapp2.RequestHandler):
             self.redirect(users.create_login_url(self.request.uri))
             return
         assignments, assignments_map = get_assignments(user)
-        students, students_map = get_students(user)
+        students, students_map, teams = get_students(user)
         grade_entries = get_grade_entries(user, assignments_map, students_map)
         # Optional adding some meta data about the assignments for the badge icon.
         assignment_badge_data = {}
@@ -53,6 +53,7 @@ class MainHandler(webapp2.RequestHandler):
         self.response.out.write(template.render({'assignments': assignments,
                                                  'active_assignemnt': self.request.get('active_assignemnt'),
                                                  'students': students,
+                                                 'teams': teams,
                                                  'grade_entries': grade_entries,
                                                  'assignment_badge_data': assignment_badge_data,
                                                  'user_email': user.email(),
@@ -92,7 +93,7 @@ class MainHandler(webapp2.RequestHandler):
             assignment_key = ndb.Key(urlsafe=self.request.get('assignment_key'))
             score = int(self.request.get('score'))
             team = self.request.get('team')
-            student_query = Student.query(team=team)
+            student_query = Student.query(Student.team==team)
             for student in student_query:
                 new_grade_entry = GradeEntry(parent=assignment_key,
                                              id=student.rose_username,
@@ -114,7 +115,7 @@ def get_assignments(user):
     assignments = Assignment.query(ancestor=get_parent_key(user)).order(Assignment.name).fetch()
     assignments_map = {}
     for assignment in assignments:
-        assignments_map[assignment.key.urlsafe()] = assignment
+        assignments_map[assignment.key] = assignment
     return assignments, assignments_map
 
 
@@ -122,9 +123,12 @@ def get_students(user):
     """ Gets all of the students for this user and makes a key map for them. """
     students = Student.query(ancestor=get_parent_key(user)).order(Student.rose_username).fetch()
     students_map = {}
+    teams = []
     for student in students:
-        students_map[student.key.urlsafe()] = student
-    return students, students_map
+        students_map[student.key] = student
+        if student.team not in teams:
+          teams.append(student.team)
+    return students, students_map, teams
 
 
 def get_grade_entries(user, assignments_map, students_map):
@@ -132,8 +136,8 @@ def get_grade_entries(user, assignments_map, students_map):
           Replaces the assignment_key and student_key with an assignment and student. """
     grade_entries = GradeEntry.query(ancestor=get_parent_key(user)).fetch()
     for grade_entry in grade_entries:
-        grade_entry.assignment = assignments_map[grade_entry.assignment_key.urlsafe()]
-        grade_entry.student = students_map[grade_entry.student_key.urlsafe()]
+        grade_entry.assignment = assignments_map[grade_entry.assignment_key]
+        grade_entry.student = students_map[grade_entry.student_key]
     return grade_entries
 
 app = webapp2.WSGIApplication([

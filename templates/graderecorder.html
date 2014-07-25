@@ -170,12 +170,24 @@
         </div>
         <form class="form-horizontal" action="" method="POST">
           <div class="modal-body">
-             <div class="form-group">
+<!--              <div class="form-group">
+            <input type="hidden" name="type" value="SingleGradeEntry">
               <label for="student_key" class="col-sm-3 control-label">Student:</label>
               <div class="col-sm-9">
                 <select name="student_key" class="form-control">
                   {% for student in students %}
                     <option value="{{ student.key.urlsafe() }}">{{ student.first_name }} {{ student.last_name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div> -->
+             <div class="form-group">
+            <input type="hidden" name="type" value="TeamGradeEntry">
+              <label for="team" class="col-sm-3 control-label">Team:</label>
+              <div class="col-sm-9">
+                <select name="team" class="form-control">
+                  {% for team in teams %}
+                    <option>{{ team }}</option>
                   {% endfor %}
                 </select>
               </div>
@@ -196,7 +208,6 @@
               <input name="score" type="text" class="form-control" placeholder="Score (integers only)">
               </div>
             </div>
-            <input type="hidden" name="type" value="SingleGradeEntry">
           </div>
 
           <div class="modal-footer">
