@@ -170,8 +170,8 @@
         </div>
         <form class="form-horizontal" action="" method="POST">
           <div class="modal-body">
-<!--              <div class="form-group">
-            <input type="hidden" name="type" value="SingleGradeEntry">
+            <input id="grade-entry-type-input" type="hidden" name="type" value="SingleGradeEntry">
+            <div id="grade-entry-by-student-form-group" class="form-group">
               <label for="student_key" class="col-sm-3 control-label">Student:</label>
               <div class="col-sm-9">
                 <select name="student_key" class="form-control">
@@ -180,9 +180,8 @@
                   {% endfor %}
                 </select>
               </div>
-            </div> -->
-             <div class="form-group">
-            <input type="hidden" name="type" value="TeamGradeEntry">
+            </div>
+            <div id="grade-entry-by-team-form-group" class="form-group" style="display: none;">
               <label for="team" class="col-sm-3 control-label">Team:</label>
               <div class="col-sm-9">
                 <select name="team" class="form-control">

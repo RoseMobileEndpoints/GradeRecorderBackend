@@ -54,11 +54,15 @@ rh.gr.enableButtons = function() {
   });
 
   $("#add-grade-by-student").click(function() {
-    console.log("TODO: Switch to grade entry by student mode.");
+    $("#grade-entry-type-input").val("SingleGradeEntry");
+    $("#grade-entry-by-student-form-group").show();
+    $("#grade-entry-by-team-form-group").hide();
   });
 
   $("#add-grade-by-team").click(function() {
-    console.log("TODO: Switch to grade entry by team mode.");
+    $("#grade-entry-type-input").val("TeamGradeEntry");
+    $("#grade-entry-by-student-form-group").hide();
+    $("#grade-entry-by-team-form-group").show();
   });
 };
 
