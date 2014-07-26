@@ -93,7 +93,7 @@ class MainHandler(webapp2.RequestHandler):
             assignment_key = ndb.Key(urlsafe=self.request.get('assignment_key'))
             score = int(self.request.get('score'))
             team = self.request.get('team')
-            student_query = Student.query(Student.team==team)
+            student_query = Student.query(Student.team==team, ancestor=get_parent_key(user))
             for student in student_query:
                 new_grade_entry = GradeEntry(parent=assignment_key,
                                              id=student.rose_username,
