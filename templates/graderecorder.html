@@ -13,7 +13,7 @@
 </head>
 <body>
 <!-- ========================== Navigation bar ========================== -->
-  <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+  <div class="navbar navbar-static-top navbar-inverse" role="navigation">
     <div class="container">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -32,7 +32,7 @@
           <li><a id='display-add-grade-entry-modal' href="#">Add Grade Entry</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#">{{user_email}}</a></li>
+          <li><a class="visible-md visible-lg" href="#">{{user_email}}</a></li>
           <li><a href="{{ logout_url }}">Sign out</a></li>
         </ul>
       </div>
@@ -56,8 +56,9 @@
       </div>
       <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
         <div id="assignment-sidebar" class="list-group">
+          <a href="#" id="" class="sidebar-link list-group-item {% if not active_assignemnt %}active{% endif %}">Show all assignments</a>
           {% for assignment in assignments %}
-            <a href="#" id="{{assignment.key.urlsafe() }}" class="sidebar-link list-group-item {% if loop.first %}active{% endif %}">
+            <a href="#" id="{{ assignment.key.urlsafe() }}" class="sidebar-link list-group-item {% if active_assignemnt == assignment.key.urlsafe() %}active{% endif %}">
               <span class="badge">
                 {{ assignment_badge_data[assignment.key][0] }}
                 {% if assignment_badge_data[assignment.key][0] > 0 %}
@@ -81,25 +82,33 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="assignment-modal-title">Add a Student</h4>
+          <h4 class="modal-title" id="assignment-modal-title">Add Student</h4>
         </div>
-        <form action="" method="POST">
+        <form action="" method="POST" class="form-horizontal" role="form">
           <div class="modal-body">
-            <div class="input-group">
-              <span class="input-group-addon">First: </span>
-              <input name="first_name" type="text" class="form-control" placeholder="First name">
+            <div class="form-group">
+              <label for="first_name" class="col-sm-2 control-label">First:</label>
+              <div class="col-sm-10">
+                <input name="first_name" type="text" class="form-control" placeholder="First name">
+              </div>
             </div>
-            <div class="input-group">
-              <span class="input-group-addon">Last: </span>
-              <input name="last_name" type="text" class="form-control" placeholder="Last name">
+            <div class="form-group">
+              <label for="last_name" class="col-sm-2 control-label">Last:</label>
+              <div class="col-sm-10">
+                <input name="last_name" type="text" class="form-control" placeholder="Last name">
+              </div>
             </div>
-            <div class="input-group">
-              <span class="input-group-addon">User: </span>
-              <input name="rose_username" type="text" class="form-control" placeholder="Rose-Hulman username">
+            <div class="form-group">
+              <label for="rose_username" class="col-sm-2 control-label">User:</label>
+              <div class="col-sm-10">
+                <input name="rose_username" type="text" class="form-control" placeholder="Rose-Hulman username">
+              </div>
             </div>
-            <div class="input-group">
-              <span class="input-group-addon">Team: </span>
-              <input name="team" type="text" class="form-control" placeholder="Team (if applicable)">
+            <div class="form-group">
+              <label for="team" class="col-sm-2 control-label">Team:</label>
+              <div class="col-sm-10">
+                <input name="team" type="text" class="form-control" placeholder="Team (if applicable)">
+              </div>
             </div>
             <input type="hidden" name="type" value="Student">
           </div>
@@ -121,13 +130,15 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="assignment-modal-title">Add an Assignment</h4>
+          <h4 class="modal-title" id="assignment-modal-title">Add Assignment</h4>
         </div>
-        <form action="" method="POST">
+        <form class="form-horizontal" action="" method="POST">
           <div class="modal-body">
-            <div class="input-group">
-              <span class="input-group-addon">Name: </span>
-              <input name="assignment_name" type="text" class="form-control" placeholder="Assignment name">
+            <div class="form-group">
+              <label for="assignment_name" class="col-sm-2 control-label">Name:</label>
+              <div class="col-sm-10">
+                <input name="assignment_name" type="text" class="form-control" placeholder="Name for the assignment">
+              </div>
             </div>
             <input type="hidden" name="type" value="Assignment">
           </div>
@@ -150,31 +161,52 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="grade-entry-modal-title">Add a Grade Entry</h4>
+          <div class="h4 modal-title" id="grade-entry-modal-title">Add Grade Entry
+            <div class="pull-right btn-group btn-toggle">
+              <button id="add-grade-by-student" class="btn btn-primary active">Student</button>
+              <button id="add-grade-by-team" class="btn btn-default">Team</button>
+            </div>
+          </div>
         </div>
-        <form action="" method="POST">
+        <form class="form-horizontal" action="" method="POST">
           <div class="modal-body">
-            <div class="input-group">
-              <span class="select-label">Assignment: </span>
-              <select name="assignment_key">
-                {% for assignment in assignments %}
-                  <option value="{{assignment.key.urlsafe() }}">{{assignment.name}}</option>
-                {% endfor %}
-              </select>
+            <input id="grade-entry-type-input" type="hidden" name="type" value="SingleGradeEntry">
+            <div id="grade-entry-by-student-form-group" class="form-group">
+              <label for="student_key" class="col-sm-3 control-label">Student:</label>
+              <div class="col-sm-9">
+                <select name="student_key" class="form-control">
+                  {% for student in students %}
+                    <option value="{{ student.key.urlsafe() }}">{{ student.first_name }} {{ student.last_name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-            <div class="input-group">
-              <span class="select-label">Student: </span>
-              <select name="student_key">
-                {% for student in students %}
-                  <option value="{{ student.key.urlsafe() }}">{{ student.first_name }} {{ student.last_name}}</option>
-                {% endfor %}
-              </select>
+            <div id="grade-entry-by-team-form-group" class="form-group" style="display: none;">
+              <label for="team" class="col-sm-3 control-label">Team:</label>
+              <div class="col-sm-9">
+                <select name="team" class="form-control">
+                  {% for team in teams %}
+                    <option>{{ team }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-            <div class="input-group">
-              <span class="input-group-addon">Score:</span>
-              <input name="score" type="text" class="form-control" placeholder="Score">
+            <div class="form-group">
+              <label for="assignment_key" class="col-sm-3 control-label">Assignment:</label>
+              <div class="col-sm-9">
+                <select name="assignment_key" class="form-control">
+                  {% for assignment in assignments %}
+                    <option value="{{ assignment.key.urlsafe() }}">{{assignment.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-            <input type="hidden" name="type" value="SingleGradeEntry">
+            <div class="form-group">
+              <label for="score" class="col-sm-3 control-label">Score:</label>
+              <div class="col-sm-9">
+              <input name="score" type="text" class="form-control" placeholder="Score (integers only)">
+              </div>
+            </div>
           </div>
 
           <div class="modal-footer">
@@ -199,19 +231,19 @@
   <script>
         var columns = [
           { "title": "Assignment",
-            "class": "",
+            "class": "visible-md visible-lg",
             "render": function(data, type, full, meta) {
-                        if (type == "filter") {
-                          return data.assignemnt_key + " " + data.assignemnt_name;
-                        }
-                        return data.assignemnt_name;
-                      }
+              if (type == "filter") {
+                return data.assignemnt_key + " " + data.assignemnt_name;
+              }
+              return data.assignemnt_name;
+            }
           },
           { "title": "First Name", "class": ""},
           { "title": "Last Name", "class": ""},
-          { "title": "Username", "class": ""},
-          { "title": "Team", "class": "center"},
-          { "title": "Score", "class": "center"}
+          { "title": "Username", "class": "hidden-xs"},
+          { "title": "Team", "class": "text-center"},
+          { "title": "Score", "class": "text-center"}
         ];
         var data = [
           {% for grade_entry in grade_entries %}

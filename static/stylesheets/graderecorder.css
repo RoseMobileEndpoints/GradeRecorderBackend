@@ -1,16 +1,6 @@
-#add-grade-entry-modal select {
-	margin-bottom: 30px;
-	font-family: arial, sans-serif;
-	font-size: 24px;
-	font-weight: bold;
+.sidebar-link:first-child {
+	background: #eee;
 }
-
-.select-label {
-  font-size: 16px;
-  display: inline-block;
-  width: 100px;
-}
-
 .table-wrapper {
   padding: 10px 30px 5px;
   border: 2px solid #ccc;
@@ -22,6 +12,10 @@ input[type="search"] {
 	margin-left: 5px;
 }
 
-.center {
-	text-align: center;
+.btn-toggle {
+	padding-right: 10px;
+}
+
+.btn-toggle .btn-default {
+	color: #ccc;
 }
