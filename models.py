@@ -15,6 +15,7 @@ class Assignment(EndpointsModel):
     _message_fields_schema = ("entityKey", "name")
     name = ndb.StringProperty()
 
+
 class GradeEntry(EndpointsModel):
     """ Score for a student on an assignment. """
     _message_fields_schema = ("entityKey", "score", "student_key", "assignment_key")
