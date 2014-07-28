@@ -83,8 +83,8 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="h4 modal-title" id="grade-entry-modal-title">Add Student
-            <button data-dismiss="modal" data-toggle="modal" data-target="#bulk-import-modal" id="show-student-bulk-import-btn" class="pull-right modal-header-btn btn btn-default">Bulk Import</button>
             <button id="show-team-assignments-btn" class="pull-right modal-header-btn btn btn-default">Assign Teams</button>
+            <button data-dismiss="modal" data-toggle="modal" data-target="#bulk-import-modal" id="show-student-bulk-import-btn" class="pull-right modal-header-btn btn btn-default">Bulk Import</button>
           </div>
         </div>
         <form action="" method="POST" class="form-horizontal" role="form">
@@ -138,8 +138,14 @@
         <form class="form-horizontal" action="/bulk_student_import" method="POST" enctype="multipart/form-data">
           <input type="file" class="hidden" name="bulk-import-file" id="bulk-import-file-upload-chooser" onchange="this.form.submit()" accept="text/csv">
           <div class="modal-body">
-            <p>Download your class roster using the Rose-Hulman schedule lookup page (it should be a .CSV file).  Then upload that file here.</p>
+            <h4>Steps to upload your roster</h4>
+            <ol>
+              <li>Download your class roster from the Rose-Hulman Schedule Lookup page.  From the class roster page the [Download Roster] link should provide you with a .CSV file.</li>
+              <li>Open that file in a simple text editor (or Excel if you must) and delete the first 3 rows.  This should leave you with the word "Username" as the first word in the CSV file.</li>
+              <li>Upload that CSV file here.</li>
+            </ol>
           </div>
+          <!-- TODO: Add a checkbox to flush ALL existing data. -->
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             <button id="bulk-import-file-upload-button" type="button" class="btn btn-primary">Upload File</button>

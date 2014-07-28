@@ -24,6 +24,10 @@ from google.appengine.ext import ndb
 from models import Student, Assignment, GradeEntry
 import logging
 
+import cStringIO
+import csv
+import re
+
 # Jinja environment instance necessary to use Jinja templates.
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)), autoescape=True)
 
@@ -140,6 +144,37 @@ def get_grade_entries(user, assignments_map, students_map):
         grade_entry.student = students_map[grade_entry.student_key]
     return grade_entries
 
+
+class BulkStudentImportAction(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            self.redirect(users.create_login_url(self.request.uri))
+            return
+        imported_file = self.request.params["bulk-import-file"].value
+        process_roster(imported_file, user)
+        self.redirect(self.request.referer)
+
+def process_roster(imported_file, user):
+    try:
+      csv_file = cStringIO.StringIO(imported_file)
+      # Read the first kb to ensure the file is a valid CSV file.
+      csv.Sniffer().sniff(csv_file.read(1024), ",")
+      csv_file.seek(0)
+      reader = csv.DictReader(csv_file, dialect="excel")
+    except:
+      raise Exception("Invalid CSV file")
+    reader.fieldnames = [re.compile('[\W_]+', flags=re.UNICODE).sub('', field).lower()
+                         for field in reader.fieldnames]
+    for row in reader:
+        new_student = Student(parent=get_parent_key(user),
+                              first_name=row.get("first", None),
+                              last_name=row.get("last", None),
+                              rose_username=row.get("username", None))
+        new_student.put()
+
+
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainHandler),
+    ('/bulk_student_import', BulkStudentImportAction)
 ], debug=True)
