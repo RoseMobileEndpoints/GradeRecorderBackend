@@ -16,6 +16,10 @@ input[type="search"] {
 	padding-right: 10px;
 }
 
+.modal-header-btn {
+	margin-right: 10px;
+}
+
 .btn-toggle .btn-default {
 	color: #ccc;
 }

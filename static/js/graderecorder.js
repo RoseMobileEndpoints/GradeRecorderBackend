@@ -3,7 +3,6 @@
  * Provides methods for the UI and interaction with the Grade Recorder Endpoints API.
  *
  * @author fisherds@google.com (Dave Fisher)
- * @author danielholevoet@google.com (Dan Holevoet)
  */
 
 /** namespace. */
@@ -21,27 +20,22 @@ rh.gr.currentAssignmentKey = null;
  * Enables the button callbacks in the UI.
  */
 rh.gr.enableButtons = function() {
-  $('#display-add-student-modal').click(function() {
-    $('#add-student-modal').on('shown.bs.modal', function () {
-      $("input[name='first_name']").focus();
-    }).modal('show');
+  $('#add-student-modal').on('shown.bs.modal', function () {
+    $("input[name='first_name']").focus();
   });
 
-  $('#display-add-assignment-modal').click(function() {
-    $('#add-assignment-modal').on('shown.bs.modal', function () {
-      $("input[name='assignment_name']").focus();
-    }).modal('show');
+  $('#add-assignment-modal').on('shown.bs.modal', function () {
+    $("input[name='assignment_name']").focus();
   });
 
-	$('#display-add-grade-entry-modal').click(function() {
-		$('#add-grade-entry-modal').on('shown.bs.modal', function () {
-		  // TODO: Attempt to guess the next student needing a grade.
-		  if (rh.gr.currentAssignmentKey.length > 0) {
-		    $("select[name=assignment_key]").val(rh.gr.currentAssignmentKey);
-		  }
-      $("input[name='score']").focus();
-    }).modal('show');
-	});
+	$('#add-grade-entry-modal').on('shown.bs.modal', function () {
+	  // TODO: Attempt to guess the next student needing a grade.
+	  if (rh.gr.currentAssignmentKey.length > 0) {
+	    $("select[name=assignment_key]").val(rh.gr.currentAssignmentKey);
+	  }
+    $("input[name='score']").focus();
+  });
+
 
 	// Within Grade entry modal.
 	$('.btn-toggle').click(function() {
@@ -64,6 +58,18 @@ rh.gr.enableButtons = function() {
     $("#grade-entry-by-student-form-group").hide();
     $("#grade-entry-by-team-form-group").show();
   });
+
+
+  $("#show-team-assignments-btn").click(function() {
+    console.log("Go to the team assignment page.");
+
+
+  });
+
+  $("#bulk-import-file-upload-button").click(function() {
+    $("#bulk-import-file-upload-chooser").attr("accept", "text/csv").trigger("click");
+  });
+
 };
 
 
