@@ -70,10 +70,12 @@ class MainHandler(webapp2.RequestHandler):
             return
         next_active_assignemnt = None
         if (self.request.get('type') == 'Student'):
+            rose_username = self.request.get('rose_username')
             new_student = Student(parent=get_parent_key(user),
+                                  id=rose_username,
                                   first_name=self.request.get('first_name'),
                                   last_name=self.request.get('last_name'),
-                                  rose_username=self.request.get('rose_username'),
+                                  rose_username=rose_username,
                                   team=self.request.get('team'))
             new_student.put()
         elif (self.request.get('type') == 'Assignment'):
@@ -167,10 +169,12 @@ def process_roster(imported_file, user):
     reader.fieldnames = [re.compile('[\W_]+', flags=re.UNICODE).sub('', field).lower()
                          for field in reader.fieldnames]
     for row in reader:
+        rose_username=row.get("username", None)
         new_student = Student(parent=get_parent_key(user),
+                              id=rose_username,
                               first_name=row.get("first", None),
                               last_name=row.get("last", None),
-                              rose_username=row.get("username", None))
+                              rose_username=rose_username)
         new_student.put()
 
 
