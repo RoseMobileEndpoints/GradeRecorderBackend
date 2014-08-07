@@ -169,11 +169,12 @@ def process_roster(imported_file, user):
     reader.fieldnames = [re.compile('[\W_]+', flags=re.UNICODE).sub('', field).lower()
                          for field in reader.fieldnames]
     for row in reader:
-        rose_username=row.get("username", None)
+        rose_username = row.get("username", None)
         new_student = Student(parent=get_parent_key(user),
                               id=rose_username,
                               first_name=row.get("first", None),
                               last_name=row.get("last", None),
+                              team=row.get("team", None),
                               rose_username=rose_username)
         new_student.put()
 

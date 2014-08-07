@@ -23,3 +23,11 @@ input[type="search"] {
 .btn-toggle .btn-default {
 	color: #ccc;
 }
+
+.rose-steps {
+	text-decoration:underline
+}
+
+.file-link {
+	text-align: center;
+}

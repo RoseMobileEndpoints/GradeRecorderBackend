@@ -59,13 +59,6 @@ rh.gr.enableButtons = function() {
     $("#grade-entry-by-team-form-group").show();
   });
 
-
-  $("#show-team-assignments-btn").click(function() {
-    console.log("Go to the team assignment page.");
-
-
-  });
-
   $("#bulk-import-file-upload-button").click(function() {
     $("#bulk-import-file-upload-chooser").attr("accept", "text/csv").trigger("click");
   });
