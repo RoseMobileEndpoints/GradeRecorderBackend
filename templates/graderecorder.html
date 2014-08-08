@@ -377,7 +377,7 @@
           { "title": "First Name", "class": ""},
           { "title": "Last Name", "class": ""},
           { "title": "Username", "class": "hidden-xs"},
-          { "title": "Team", "class": "text-center"},
+          { "title": "Team", "class": "hidden-xs"},
           { "title": "Score", "class": "text-center"}
         ];
         var data = [
@@ -395,10 +395,21 @@
             {% if not loop.last %},{% endif %}
           {% endfor %}
         ];
-        $("#grade-entry-table").DataTable({
-          "columns": columns,
-          "data": data
-        }).order([3, "asc"]).order([0, "asc"]).draw();
+        if ($(window).width() < 600) {
+        	$("#grade-entry-table").DataTable({
+                "columns": columns,
+                "data": data,
+                "paging": false,
+                "filter": false,
+                "info": false
+              }).order([3, "asc"]).order([0, "asc"]).draw();
+        } else {
+        	$("#grade-entry-table").DataTable({
+                "columns": columns,
+                "data": data,
+                "info": false
+              }).order([3, "asc"]).order([0, "asc"]).draw();
+        }
       </script>
   <script src="/static/js/graderecorder.js"></script>
 </body>
