@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grade Recorder</title>
   <link rel="stylesheet" href="/static/stylesheets/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
+
   <link rel="stylesheet" href="/static/stylesheets/bootstrap-theme.min.css">
   <link rel="stylesheet" href="/static/stylesheets/dataTables.bootstrap.css">
   <link rel="stylesheet" href="/static/stylesheets/offcanvas.css">
@@ -27,9 +29,16 @@
       </div>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-left">
-          <li><a id='display-add-student-modal' data-toggle="modal" data-target="#add-student-modal" href="#">Add Students</a></li>
-          <li><a id='display-add-assignment-modal' data-toggle="modal" data-target="#add-assignment-modal" href="#">Add Assignment</a></li>
-          <li><a id='display-add-grade-entry-modal' data-toggle="modal" data-target="#add-grade-entry-modal" href="#">Add Grade Entry</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Students <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a data-toggle="modal" data-target="#add-student-modal" href="#">Add Student</a></li>
+              <li><a data-toggle="modal" data-target="#bulk-import-modal" href="#">Import Roster</a></li>
+              <li><a data-toggle="modal" data-target="#select-student-to-edit-modal" href="#">Edit / Delete</a></li>
+            </ul>
+          </li>
+          <li><a data-toggle="modal" data-target="#add-assignment-modal" href="#">Add Assignment</a></li>
+          <li><a data-toggle="modal" data-target="#add-grade-entry-modal" href="#">Add Grade Entry</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a class="visible-md visible-lg" href="#">{{user_email}}</a></li>
@@ -76,15 +85,13 @@
 
 <!-- ========================== Modal data entry dialogs ========================== -->
 
-  <!-- Modal -->
+  <!-- Modal (also used to update a student) -->
   <div id='add-student-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Add Student" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <div class="h4 modal-title" id="grade-entry-modal-title">Add Student
-            <button data-dismiss="modal" data-toggle="modal" data-target="#bulk-import-modal" id="show-student-bulk-import-btn" class="pull-right modal-header-btn btn btn-default">Import Roster</button>
-          </div>
+          <div class="h4 modal-title" id="add-student-modal-title">Add Student</div>
         </div>
         <form action="" method="POST" class="form-horizontal" role="form">
           <div class="modal-body">
@@ -148,7 +155,7 @@
             </p>
             <div class="checkbox">
               <label>
-                <input type="checkbox"> This is a new quarter.  Just before doing the import, please delete all previous students and <b>all</b> existing grades.  Use this option with <b>EXTREME</b> caution!
+                <input type="checkbox" name="remove_all_students"> This is a new quarter.  Just before doing the import, please delete all previous students and <b>all</b> existing grades.  Use this option with <b>EXTREME</b> caution!
               </label>
             </div>
           </div>
@@ -163,6 +170,96 @@
     <!-- /.modal-dialog -->
   </div>
   <!-- /.modal -->
+
+
+  <!-- Modal -->
+  <div id='select-student-to-edit-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Select student to edit" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="select-student-to-edit-modal-title">Edit / Delete</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Team</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in students %}
+                <tr>
+                  <td>{{student.rose_username}}</td>
+                  <td>{{student.first_name}}</td>
+                  <td>{{student.last_name}}</td>
+                  <td>{{student.team}}</td>
+                  <td>
+                    <div class="btn-group">
+                      <button data-dismiss="modal" data-toggle="modal" data-target="#add-student-modal" type="button" class="edit-student btn btn-xs btn-success">Edit
+                        <div class="hidden rose-username">{{student.rose_username}}</div>
+                        <div class="hidden first-name">{{student.first_name}}</div>
+                        <div class="hidden last-name">{{student.last_name}}</div>
+                        <div class="hidden team">{{student.team}}</div>
+                      </button>
+                      <button data-dismiss="modal" data-toggle="modal" data-target="#delete-student-modal" type="button" class="delete-student btn btn-xs btn-danger">Delete
+                        <div class="hidden entity-key">{{student.key.urlsafe()}}</div>
+                        <div class="hidden first-name">{{student.first_name}}</div>
+                        <div class="hidden last-name">{{student.last_name}}</div>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button data-dismiss="modal" data-toggle="modal" data-target="#delete-student-modal" class="delete-student btn btn-danger">Delete All Students
+            <div class="hidden entity-key">AllStudents</div>
+            <div class="hidden first-name">All</div>
+            <div class="hidden last-name">Students</div>
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+
+  <!-- Modal -->
+  <div id='delete-student-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Delete Student" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="delete-student-modal-title">Delete student</h4>
+        </div>
+        <form class="form-horizontal" action="/delete_student" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="student_to_delete_key">
+          <div class="modal-body">
+            <div id="delete-modal-body">Are you sure you wish to delete <b><span id="delete-student-name"></span></b>?<br>
+            <i>All grades <span class="single-delete-text">for the student</span> will also be deleted.</i></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Delete <span class="all-delete-text">ALL </span>Student<span class="all-delete-text">s</span></button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
 
   <!-- Modal -->
   <div id='add-assignment-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Assignment" aria-hidden="true">

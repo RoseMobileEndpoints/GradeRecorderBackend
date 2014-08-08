@@ -153,6 +153,8 @@ class BulkStudentImportAction(webapp2.RequestHandler):
         if not user:
             self.redirect(users.create_login_url(self.request.uri))
             return
+        if len(self.request.get("remove_all_students")) > 0:
+          remove_all_students(user)
         imported_file = self.request.params["bulk-import-file"].value
         process_roster(imported_file, user)
         self.redirect(self.request.referer)
@@ -178,8 +180,38 @@ def process_roster(imported_file, user):
                               rose_username=rose_username)
         new_student.put()
 
+class DeleteStudentAction(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            self.redirect(users.create_login_url(self.request.uri))
+            return
+        if self.request.get('student_to_delete_key') == "AllStudents":
+          remove_all_students(user)
+        else:
+          student_key = ndb.Key(urlsafe=self.request.get('student_to_delete_key'))
+          remove_all_grades_for_student(user, student_key)
+          student_key.delete();
+        self.redirect(self.request.referer)
+
+def remove_all_students(user):
+  """ Removes all grades and all students for a user. (use with caution) """
+  all_grades = GradeEntry.query(ancestor=get_parent_key(user))
+  for grade in all_grades:
+    grade.key.delete()
+  all_students = Student.query(ancestor=get_parent_key(user))
+  for student in all_students:
+    student.key.delete()
+
+def remove_all_grades_for_student(user, student_key):
+  """ Removes all grades for the given student. """
+  grades_for_student = GradeEntry.query(GradeEntry.student_key==student_key, ancestor=get_parent_key(user))
+  for grade in grades_for_student:
+    grade.key.delete()
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/bulk_student_import', BulkStudentImportAction)
+    ('/bulk_student_import', BulkStudentImportAction),
+    ('/delete_student', DeleteStudentAction),
+
 ], debug=True)
