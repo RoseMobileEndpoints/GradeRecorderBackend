@@ -400,9 +400,9 @@
                 "columns": columns,
                 "data": data,
                 "paging": false,
-                "filter": false,
                 "info": false
               }).order([3, "asc"]).order([0, "asc"]).draw();
+        	$(".dataTables_filter").hide();
         } else {
         	$("#grade-entry-table").DataTable({
                 "columns": columns,

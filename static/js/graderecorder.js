@@ -110,6 +110,7 @@ $(document).ready(function() {
 		// Update the list of grades shown in the table.
 		rh.gr.currentAssignmentKey = $(this).attr('id');
 		rh.gr.updateTable();
+		$(".row-offcanvas").removeClass("active");
 	});
 
 	if (localStorage.showStudentEditDeleteTable) {
