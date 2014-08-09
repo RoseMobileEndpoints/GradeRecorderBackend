@@ -40,7 +40,14 @@
               <li><a data-toggle="modal" data-target="#select-student-to-edit-modal" href="#">Edit / Delete</a></li>
             </ul>
           </li>
-          <li><a data-toggle="modal" data-target="#add-assignment-modal" href="#">Add Assignment</a></li>
+          <li><a class="hidden-sm hidden-md hidden-lg" data-toggle="modal" data-target="#add-assignment-modal" href="#">Add Assignment</a></li>
+          <li class="hidden-xs dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Assignments <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a data-toggle="modal" data-target="#add-assignment-modal" href="#">Add Assignment</a></li>
+              <li><a data-toggle="hidden" data-target=".assignment-actions" href="#">Edit / Delete</a></li>
+            </ul>
+          </li>
           <li><a data-toggle="modal" data-target="#add-grade-entry-modal" href="#">Add Grade Entry</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -70,7 +77,7 @@
         <div id="assignment-sidebar" class="list-group">
           <a href="#" id="" class="sidebar-link list-group-item {% if not active_assignemnt %}active{% endif %}">Show all assignments</a>
           {% for assignment in assignments %}
-            <a href="#" id="{{ assignment.key.urlsafe() }}" class="sidebar-link list-group-item {% if active_assignemnt == assignment.key.urlsafe() %}active{% endif %}">
+            <a href="#" id="{{ assignment.key.urlsafe() }}" class="clearfix sidebar-link list-group-item {% if active_assignemnt == assignment.key.urlsafe() %}active{% endif %}">
               <span class="badge">
                 {{ assignment_badge_data[assignment.key][0] }}
                 {% if assignment_badge_data[assignment.key][0] > 0 %}
@@ -78,6 +85,18 @@
                 {% endif %}
               </span>
               <span class="assignment-name">{{assignment.name}}</span>
+              <div class="assignment-actions hidden">
+                <div class="btn-group">
+                <button data-dismiss="modal" data-toggle="modal" data-target="#add-student-modal" type="button" class="edit-student btn btn-xs btn-success">Edit
+                  <div class="hidden name">{{assignment.name}}</div>
+                  <div class="hidden entity-key">{{assignment.key.urlsafe()}}</div>
+                </button>
+                <button data-dismiss="modal" data-toggle="modal" data-target="#delete-student-modal" type="button" class="delete-student btn btn-xs btn-danger">Delete
+                  <div class="hidden name">{{assignment.name}}</div>
+                  <div class="hidden entity-key">{{assignment.key.urlsafe()}}</div>
+                </button>
+              </div>
+              </div>
             </a>
           {% endfor %}
         </div>
@@ -147,18 +166,32 @@
         <form class="form-horizontal" action="/bulk_student_import" method="POST" enctype="multipart/form-data">
           <input type="file" class="hidden" name="bulk-import-file" id="bulk-import-file-upload-chooser" onchange="this.form.submit()" accept="text/csv">
           <div class="modal-body">
-            <p>The .CSV roster file must have the columns "<b>Username</b>", "<b>Last</b>", "<b>First</b>" and can optionally add "<b>Team</b>". Here is a simple example .CSV roster file: <div class="file-link"><a href="/static/files/simple_roster.csv">simple_roster.csv</a></div></p>
-            <p><span class="rose-steps">Rose-Hulman steps to upload your roster</span>
-              <ol>
-                <li>Download your class roster from the Rose-Hulman Schedule Lookup page.  From the class roster page the [Download Roster] link should provide you with a great starting point .CSV file.</li>
-                <li>Open that file in a simple text editor or Excel and delete the first 3 rows.  This should leave you with the word "<b>Username</b>" as the first word in the CSV file.</li>
-                <li>Additionally you can add a "<b>Team</b>" column to set a Team for each student.</li>
-                <li>Upload that CSV file here (extra columns will be ignored safely).</li>
-              </ol>
-            </p>
+            <p>The .CSV roster file must have the columns "<b>Username</b>", "<b>Last</b>", "<b>First</b>" and can optionally add "<b>Team</b>". Here is a simple example .CSV roster file: <br><div class="file-link"><a href="/static/files/simple_roster.csv">simple_roster.csv</a></div></p>
+            <br>
+            <div class="panel-group" id="accordion">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                      Rose-Hulman steps to upload your roster
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <ol>
+                      <li>Download your class roster from the Rose-Hulman Schedule Lookup page.  From the class roster page the [Download Roster] link should provide you with a great starting point .CSV file.</li>
+                      <li>Open that file in a simple text editor or Excel and delete the first 3 rows.  This should leave you with the word "<b>Username</b>" as the first word in the CSV file.</li>
+                      <li>Additionally you can add a "<b>Team</b>" column to set a Team for each student.</li>
+                      <li>Upload that CSV file here (extra columns will be ignored safely).</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="checkbox">
               <label>
-                <input type="checkbox" name="remove_all_students"> This is a new quarter.  Just before doing the import, please delete all previous students and <b>all</b> existing grades.  Use this option with <b>EXTREME</b> caution!
+                <input type="checkbox" name="remove_all_students"> This is a new quarter.  Just before doing the import, please delete all previous students and <b>all</b> existing grades.  <i>Use this option with <b>EXTREME</b> caution!</i>
               </label>
             </div>
           </div>

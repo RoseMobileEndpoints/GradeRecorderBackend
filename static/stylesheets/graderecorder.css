@@ -29,6 +29,7 @@ input[type="search"] {
 
 .file-link {
 	text-align: center;
+	font-size: 1.3em;
 }
 
 #delete-modal-body {
