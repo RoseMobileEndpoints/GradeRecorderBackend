@@ -138,6 +138,11 @@ rh.gr.enableButtons = function() {
 		localStorage.showGradeEntryEditDelete = "yes";
 		$("#delete-grade-entry-form").submit();
 	});
+
+	// Hide nav bar on selection.
+	$('.navbar a').click(function(){
+	    $(".navbar-toggle").click();
+	});
 };
 
 rh.gr.updateTable = function() {
