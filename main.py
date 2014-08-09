@@ -243,10 +243,20 @@ class DeleteGradeEntryAction(webapp2.RequestHandler):
         grade_entry_key.delete();
         self.redirect(self.request.referer)
 
+class ExportCsv(webapp2.RequestHandler):
+  def get(self):
+    self.response.headers['Content-Type'] = 'application/csv'
+    writer = csv.writer(self.response.out)
+    writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
+    writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
+    writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
+
+
 app = webapp2.WSGIApplication([
     ("/", MainHandler),
     ("/bulk_student_import", BulkStudentImportAction),
     ("/delete_student", DeleteStudentAction),
     ("/delete_assignment", DeleteAssignmentAction),
-    ("/delete_grade_entry", DeleteGradeEntryAction)
+    ("/delete_grade_entry", DeleteGradeEntryAction),
+    ("/grade_recorder_grades.csv", ExportCsv)
 ], debug=True)
