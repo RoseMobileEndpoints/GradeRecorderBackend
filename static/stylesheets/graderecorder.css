@@ -32,7 +32,12 @@ input[type="search"] {
 	font-size: 1.3em;
 }
 
-#delete-modal-body {
+.delete-modal-body {
 	text-align: center;
 	font-size: 1.2em;
+}
+
+.delete-modal-body i {
+	font-size: 1em;
+	color: dark-gray;
 }

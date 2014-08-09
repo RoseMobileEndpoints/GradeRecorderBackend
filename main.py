@@ -79,10 +79,17 @@ class MainHandler(webapp2.RequestHandler):
                                   team=self.request.get('team'))
             new_student.put()
         elif (self.request.get('type') == 'Assignment'):
-            new_assignment = Assignment(parent=get_parent_key(user),
-                                        name=self.request.get('assignment_name'))
-            new_assignment.put()
-            next_active_assignemnt = new_assignment.key.urlsafe()
+            active_assignment = Assignment(parent=get_parent_key(user),
+                                           name=self.request.get('assignment_name'))
+            if len(self.request.get('assignment_entity_key')) > 0:
+                assignment_key = ndb.Key(urlsafe=self.request.get('assignment_entity_key'))
+                if assignment_key:
+                    assignment = assignment_key.get()
+                    if assignment:
+                        active_assignment = assignment
+                        active_assignment.name = self.request.get('assignment_name')
+            active_assignment.put()
+            next_active_assignemnt = active_assignment.key.urlsafe()
         elif (self.request.get('type') == 'SingleGradeEntry'):
             assignment_key = ndb.Key(urlsafe=self.request.get('assignment_key'))
             student_key = ndb.Key(urlsafe=self.request.get('student_key'))
@@ -209,9 +216,28 @@ def remove_all_grades_for_student(user, student_key):
   for grade in grades_for_student:
     grade.key.delete()
 
+class DeleteAssignmentAction(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            self.redirect(users.create_login_url(self.request.uri))
+            return
+        assignment_key = ndb.Key(urlsafe=self.request.get('assignment_to_delete_key'))
+        remove_all_grades_for_assignment(user, assignment_key)
+        assignment_key.delete();
+        self.redirect("/")
+
+
+def remove_all_grades_for_assignment(user, assignment_key):
+  """ Removes all grades for the given student. """
+  grades_for_assignment = GradeEntry.query(ancestor=assignment_key)
+  for grade in grades_for_assignment:
+    grade.key.delete()
+
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/bulk_student_import', BulkStudentImportAction),
     ('/delete_student', DeleteStudentAction),
+    ('/delete_assignment', DeleteAssignmentAction)
 
 ], debug=True)

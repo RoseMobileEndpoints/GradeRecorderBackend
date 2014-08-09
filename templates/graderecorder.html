@@ -45,7 +45,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Assignments <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
               <li><a data-toggle="modal" data-target="#add-assignment-modal" href="#">Add Assignment</a></li>
-              <li><a data-toggle="hidden" data-target=".assignment-actions" href="#">Edit / Delete</a></li>
+              <li><a id="toggle-edit-assignments" href="#">Edit / Delete</a></li>
             </ul>
           </li>
           <li><a data-toggle="modal" data-target="#add-grade-entry-modal" href="#">Add Grade Entry</a></li>
@@ -87,11 +87,11 @@
               <span class="assignment-name">{{assignment.name}}</span>
               <div class="assignment-actions hidden">
                 <div class="btn-group">
-                <button data-dismiss="modal" data-toggle="modal" data-target="#add-student-modal" type="button" class="edit-student btn btn-xs btn-success">Edit
+                <button data-dismiss="modal" data-toggle="modal" data-target="#add-assignment-modal" type="button" class="edit-assignment btn btn-xs btn-success">Edit
                   <div class="hidden name">{{assignment.name}}</div>
                   <div class="hidden entity-key">{{assignment.key.urlsafe()}}</div>
                 </button>
-                <button data-dismiss="modal" data-toggle="modal" data-target="#delete-student-modal" type="button" class="delete-student btn btn-xs btn-danger">Delete
+                <button data-dismiss="modal" data-toggle="modal" data-target="#delete-assignment-modal" type="button" class="delete-assignment btn btn-xs btn-danger">Delete
                   <div class="hidden name">{{assignment.name}}</div>
                   <div class="hidden entity-key">{{assignment.key.urlsafe()}}</div>
                 </button>
@@ -276,17 +276,44 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="delete-student-modal-title">Delete student</h4>
+          <h4 class="modal-title" id="delete-student-modal-title">Delete Student</h4>
         </div>
-        <form class="form-horizontal" action="/delete_student" method="POST" enctype="multipart/form-data">
+        <form class="form-horizontal" action="/delete_student" method="POST">
           <input type="hidden" name="student_to_delete_key">
           <div class="modal-body">
-            <div id="delete-modal-body">Are you sure you wish to delete <b><span id="delete-student-name"></span></b>?<br>
+            <div class="delete-modal-body">Are you sure you wish to delete <b><span id="delete-student-name"></span></b>?<br>
             <i>All grades <span class="single-delete-text">for the student</span> will also be deleted.</i></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-danger">Delete <span class="all-delete-text">ALL </span>Student<span class="all-delete-text">s</span></button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+
+  <!-- Modal -->
+  <div id='delete-assignment-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Delete Assignment" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="delete-assignment-modal-title">Delete Assignment</h4>
+        </div>
+        <form class="form-horizontal" action="/delete_assignment" method="POST">
+          <input type="hidden" name="assignment_to_delete_key">
+          <div class="modal-body">
+            <div class="delete-modal-body">Are you sure you wish to delete <b><span id="delete-assignment-name"></span></b>?<br>
+            <i>All grades for this assignment will be deleted.</i></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Delete assignment</button>
           </div>
         </form>
       </div>
@@ -311,6 +338,7 @@
               <label for="assignment_name" class="col-sm-2 control-label">Name:</label>
               <div class="col-sm-10">
                 <input name="assignment_name" type="text" class="form-control" placeholder="Name for the assignment">
+                <input name="assignment_entity_key" type="text" class="hidden">
               </div>
             </div>
             <input type="hidden" name="type" value="Assignment">
@@ -333,7 +361,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <div class="h4 modal-title" id="grade-entry-modal-title">Add Grade Entry
+          <div class="h4 modal-title" id="grade-entry-modal-title">Add<span class="hidden-xs"> Grade Entry</span>
             <div class="pull-right btn-group btn-toggle">
               <button id="add-grade-by-student" class="btn btn-primary active">Student</button>
               <button id="add-grade-by-team" class="btn btn-default">Team</button>

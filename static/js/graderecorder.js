@@ -35,6 +35,10 @@ rh.gr.enableButtons = function() {
 		$("input[name='score']").focus();
 	});
 
+	$("#toggle-edit-assignments").click(function() {
+		$(".assignment-actions").toggleClass("hidden");
+	});
+
 	// Within Grade entry modal.
 	$('.btn-toggle').click(function() {
 		// Change which button is active primary vs default
@@ -90,6 +94,20 @@ rh.gr.enableButtons = function() {
 			localStorage.showStudentEditDeleteTable = "yes";
 			$("#delete-student-modal .all-delete-text").hide();
 		}
+	});
+
+	$(".edit-assignment").click(function() {
+		name = $(this).find(".name").html();
+		entityKey = $(this).find(".entity-key").html();
+		$("#add-assignment-modal input[name=assignment_name]").val(name);
+		$("#add-assignment-modal input[name=assignment_entity_key]").val(entityKey);
+	});
+
+	$(".delete-assignment").click(function() {
+		name = $(this).find(".name").html();
+		entityKey = $(this).find(".entity-key").html();
+		$("#delete-assignment-name").html(name);
+		$("input[name=assignment_to_delete_key]").val(entityKey);
 	});
 };
 
