@@ -98,11 +98,21 @@ rh.gr.updateTable = function() {
 	table.search(rh.gr.currentAssignmentKey).draw();
 };
 
+rh.gr.updatePageTitle = function() {
+	newName = $("#" + rh.gr.currentAssignmentKey).find(".assignment-name").html();
+	if (newName) {
+		$("#assignment-name").html(newName);
+	} else {
+		$("#assignment-name").html("Grades");
+	}
+};
+
 // Navigation of grade entries.
 $(document).ready(function() {
 	rh.gr.enableButtons();
 	rh.gr.currentAssignmentKey = $('.sidebar-link.active').attr('id');
 	rh.gr.updateTable();
+	rh.gr.updatePageTitle();
 	$('.sidebar-link').click(function() {
 		// Update the sidebar
 		$('.sidebar-link').removeClass('active');
@@ -111,10 +121,12 @@ $(document).ready(function() {
 		rh.gr.currentAssignmentKey = $(this).attr('id');
 		rh.gr.updateTable();
 		$(".row-offcanvas").removeClass("active");
+		rh.gr.updatePageTitle();
 	});
 
 	if (localStorage.showStudentEditDeleteTable) {
 		$("#select-student-to-edit-modal").modal("show");
 	    localStorage.removeItem("showStudentEditDeleteTable");
 	};
+
 });
