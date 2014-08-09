@@ -243,14 +243,28 @@ class DeleteGradeEntryAction(webapp2.RequestHandler):
         grade_entry_key.delete();
         self.redirect(self.request.referer)
 
-class ExportCsv(webapp2.RequestHandler):
-  def get(self):
+class ExportCsvAction(webapp2.RequestHandler):
+  def post(self):
+    exportStudentName = len(self.request.get("student_name")) > 0
+    exportRoseUsername = len(self.request.get("rose_username")) > 0
+    exportTeam = len(self.request.get("team")) > 0
+    exportEmail = len(self.request.get("email")) > 0
+    emailDomain = self.request.get("email_domain")
+    assignmentKeys = self.request.get_all("assignment_keys[]")
+    logging.info("exportStudentName = " + str(exportStudentName))
+    logging.info("exportRoseUsername = " + str(exportRoseUsername))
+    logging.info("exportTeam = " + str(exportTeam))
+    logging.info("exportEmail = " + str(exportEmail))
+    logging.info("emailDomain = " + emailDomain)
+
+    logging.info("assignmentKeys = " + str(assignmentKeys))
+
+
     self.response.headers['Content-Type'] = 'application/csv'
     writer = csv.writer(self.response.out)
     writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
     writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
     writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
-
 
 app = webapp2.WSGIApplication([
     ("/", MainHandler),
@@ -258,5 +272,5 @@ app = webapp2.WSGIApplication([
     ("/delete_student", DeleteStudentAction),
     ("/delete_assignment", DeleteAssignmentAction),
     ("/delete_grade_entry", DeleteGradeEntryAction),
-    ("/grade_recorder_grades.csv", ExportCsv)
+    ("/grade_recorder_grades.csv", ExportCsvAction)
 ], debug=True)

@@ -138,6 +138,15 @@ rh.gr.enableButtons = function() {
 		localStorage.showGradeEntryEditDelete = "yes";
 		$("#delete-grade-entry-form").submit();
 	});
+
+	$("#select-all-student-fields").click(function() {
+		$("#student-fields-export-table input[type=checkbox]").prop("checked", true);
+	});
+
+	$("#select-all-assignments").click(function() {
+		$("#assignments-export-table input[type=checkbox]").prop("checked", true);
+
+	});
 };
 
 rh.gr.updateTable = function() {
@@ -195,4 +204,5 @@ $(document).ready(function() {
 	    localStorage.removeItem("showGradeEntryEditDelete");
 	};
 
+	$("#export-grades-modal").modal("show");
 });
