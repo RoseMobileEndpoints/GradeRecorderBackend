@@ -41,12 +41,7 @@ rh.gr.enableButtons = function() {
 
 	// Within Grade entry modal.
 	$('.btn-toggle').click(function() {
-		// Change which button is active primary vs default
-		$(this).find('.btn').toggleClass('active');
-		if ($(this).find('.btn-primary').size() > 0) {
-			$(this).find('.btn').toggleClass('btn-primary');
-		}
-		$(this).find('.btn').toggleClass('btn-default');
+		rh.gr.toggleGradeEntryModeSwitchDisplay();
 	});
 
 	$("#add-grade-by-student").click(function() {
@@ -109,6 +104,23 @@ rh.gr.enableButtons = function() {
 		$("#delete-assignment-name").html(name);
 		$("input[name=assignment_to_delete_key]").val(entityKey);
 	});
+
+	$(".edit-grade-entry").click(function() {
+		studentEntityKey = $(this).find(".student-key").html();
+		assignmentEntityKey = $(this).find(".assignment-key").html();
+		score = $(this).find(".score").html();
+		rh.gr.currentAssignmentKey = assignmentEntityKey; // used in show event
+		$("select[name=student_key]").val(studentEntityKey);
+		$("input[name='score']").attr("placeholder", score);
+
+		// In the Highly unlikely event Grade Entry is in Team mode.
+		if ($("#add-grade-by-team").hasClass("active")) {
+			rh.gr.toggleGradeEntryModeSwitchDisplay();
+			$("#grade-entry-type-input").val("SingleGradeEntry");
+			$("#grade-entry-by-student-form-group").show();
+			$("#grade-entry-by-team-form-group").hide();
+		}
+	});
 };
 
 rh.gr.updateTable = function() {
@@ -123,6 +135,16 @@ rh.gr.updatePageTitle = function() {
 	} else {
 		$("#assignment-name").html("Grades");
 	}
+};
+
+// Toggle from Team grade entry to Student grade entry.
+rh.gr.toggleGradeEntryModeSwitchDisplay = function() {
+	// Change which button is "active primary" vs "default"
+	$('.btn-toggle').find('.btn').toggleClass('active');
+	if ($('.btn-toggle').find('.btn-primary').size() > 0) {
+		$('.btn-toggle').find('.btn').toggleClass('btn-primary');
+	}
+	$('.btn-toggle').find('.btn').toggleClass('btn-default');
 };
 
 // Navigation of grade entries.
@@ -145,6 +167,11 @@ $(document).ready(function() {
 	if (localStorage.showStudentEditDeleteTable) {
 		$("#select-student-to-edit-modal").modal("show");
 	    localStorage.removeItem("showStudentEditDeleteTable");
+	};
+
+	if (localStorage.showGradeEntryEditDelete) {
+		// TODO: Implement
+	    localStorage.removeItem("showGradeEntryEditDelete");
 	};
 
 });
