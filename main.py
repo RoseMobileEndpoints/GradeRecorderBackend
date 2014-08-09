@@ -227,17 +227,26 @@ class DeleteAssignmentAction(webapp2.RequestHandler):
         assignment_key.delete();
         self.redirect("/")
 
-
 def remove_all_grades_for_assignment(user, assignment_key):
   """ Removes all grades for the given student. """
   grades_for_assignment = GradeEntry.query(ancestor=assignment_key)
   for grade in grades_for_assignment:
     grade.key.delete()
 
-app = webapp2.WSGIApplication([
-    ('/', MainHandler),
-    ('/bulk_student_import', BulkStudentImportAction),
-    ('/delete_student', DeleteStudentAction),
-    ('/delete_assignment', DeleteAssignmentAction)
+class DeleteGradeEntryAction(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            self.redirect(users.create_login_url(self.request.uri))
+            return
+        grade_entry_key = ndb.Key(urlsafe=self.request.get('grade_entry_to_delete_key'))
+        grade_entry_key.delete();
+        self.redirect(self.request.referer)
 
+app = webapp2.WSGIApplication([
+    ("/", MainHandler),
+    ("/bulk_student_import", BulkStudentImportAction),
+    ("/delete_student", DeleteStudentAction),
+    ("/delete_assignment", DeleteAssignmentAction),
+    ("/delete_grade_entry", DeleteGradeEntryAction)
 ], debug=True)

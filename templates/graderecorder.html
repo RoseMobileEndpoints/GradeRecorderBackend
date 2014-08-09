@@ -76,7 +76,10 @@
         <p class="pull-right visible-xs">
           <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
         </p>
-        <h2 id="assignment-name">Grades</h2>
+        <div id="above-table-row" class="clearfix">
+          <span id="assignment-name" class="h2">Grades</span>
+          <button id="grade-edits-complete" type="button" class="btn btn-success pull-right hidden">Grade edits complete</button>
+        </div>
         <div class="table-wrapper">
           <table id="grade-entry-table" class="table table-striped table-hover table-condensed table-responsive"></table>
         </div>
@@ -112,6 +115,9 @@
     </div>
   </div>
 
+  <form id="delete-grade-entry-form" class="hidden" action="/delete_grade_entry" method="POST">
+    <input name="grade_entry_to_delete_key">
+  </form>
 
 <!-- ========================== Modal data entry dialogs ========================== -->
 
@@ -448,11 +454,11 @@
           },
           { "title": "First Name", "class": ""},
           { "title": "Last Name", "class": ""},
-          { "title": "Username", "class": "hidden-xs"},
+          { "title": "Username", "class": "hidden-sm hidden-xs"},
           { "title": "Team", "class": "hidden-xs"},
           { "title": "Score", "class": "text-center"},
           { "title": "Actions",
-        	"class": "",
+        	"class": "grade-entry-actions hidden hidden-xs",
         	"render": function(data, type, full, meta) {
         	  if (type == "display") {
                   return '<div class="btn-group">' +
@@ -460,6 +466,9 @@
                       '<div class="hidden student-key">' + data.student_key + '</div>' +
                       '<div class="hidden assignment-key">' + data.assignment_key + '</div>' +
                       '<div class="hidden score">' + data.score + '</div>' +
+                    '</button>' +
+                    '<button data-dismiss="modal" type="button" class="delete-grade-entry btn btn-xs btn-danger">Delete' +
+                      '<div class="hidden entity-key">' + data.entity_key + '</div>' +
                     '</button>' +
                   '</div>'
         	  }
@@ -481,7 +490,8 @@
              {
             	 "student_key": "{{ grade_entry.student_key.urlsafe() }}",
             	 "assignment_key": "{{ grade_entry.assignment_key.urlsafe() }}",
-            	 "score": "{{ grade_entry.score }}"
+            	 "score": "{{ grade_entry.score }}",
+            	 "entity_key": "{{ grade_entry.key.urlsafe() }}"
              }
             ]
             {% if not loop.last %},{% endif %}

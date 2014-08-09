@@ -44,6 +44,16 @@ rh.gr.enableButtons = function() {
 		rh.gr.toggleGradeEntryModeSwitchDisplay();
 	});
 
+	$("#toggle-edit-grade-entries").click(function() {
+		$(".grade-entry-actions").toggleClass("hidden");
+		$("#grade-edits-complete").toggleClass("hidden");
+	});
+
+	$("#grade-edits-complete").click(function() {
+		$(".grade-entry-actions").addClass("hidden");
+		$("#grade-edits-complete").addClass("hidden");
+	});
+
 	$("#add-grade-by-student").click(function() {
 		$("#grade-entry-type-input").val("SingleGradeEntry");
 		$("#grade-entry-by-student-form-group").show();
@@ -121,6 +131,13 @@ rh.gr.enableButtons = function() {
 			$("#grade-entry-by-team-form-group").hide();
 		}
 	});
+
+	$(".delete-grade-entry").click(function() {
+		entityKey = $(this).find(".entity-key").html();
+		$("input[name=grade_entry_to_delete_key]").val(entityKey);
+		localStorage.showGradeEntryEditDelete = "yes";
+		$("#delete-grade-entry-form").submit();
+	});
 };
 
 rh.gr.updateTable = function() {
@@ -170,7 +187,11 @@ $(document).ready(function() {
 	};
 
 	if (localStorage.showGradeEntryEditDelete) {
-		// TODO: Implement
+		// Make sure there are grades remaining before going into edit mode.
+		if (!$("table .dataTables_empty").length) {
+			$(".grade-entry-actions").removeClass("hidden");
+			$("#grade-edits-complete").removeClass("hidden");
+		}
 	    localStorage.removeItem("showGradeEntryEditDelete");
 	};
 
