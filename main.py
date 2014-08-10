@@ -240,8 +240,10 @@ class DeleteGradeEntryAction(webapp2.RequestHandler):
             self.redirect(users.create_login_url(self.request.uri))
             return
         grade_entry_key = ndb.Key(urlsafe=self.request.get('grade_entry_to_delete_key'))
+        grade = grade_entry_key.get()
+        next_active_assignemnt = grade.assignment_key.urlsafe()
         grade_entry_key.delete();
-        self.redirect(self.request.referer)
+        self.redirect("/?active_assignemnt=" + next_active_assignemnt)
 
 class ExportCsvAction(webapp2.RequestHandler):
   def post(self):
@@ -252,20 +254,16 @@ class ExportCsvAction(webapp2.RequestHandler):
     export_student_name = len(self.request.get("student_name")) > 0
     export_rose_username = len(self.request.get("rose_username")) > 0
     export_team = len(self.request.get("team")) > 0
-    export_email = len(self.request.get("email")) > 0
-    email_domain = self.request.get("email_domain")
     urlsafe_assignment_keys = self.request.get_all("assignment_keys[]")
     csv_data = get_csv_export_lists(user, export_student_name, export_rose_username,
-                                    export_team, export_email, email_domain,
-                                    urlsafe_assignment_keys)
+                                    export_team, urlsafe_assignment_keys)
     self.response.headers['Content-Type'] = 'application/csv'
     writer = csv.writer(self.response.out)
     for csv_row in csv_data:
       writer.writerow(csv_row)
 
 def get_csv_export_lists(user, export_student_name, export_rose_username,
-                         export_team, export_email, email_domain,
-                         urlsafe_assignment_keys):
+                         export_team, urlsafe_assignment_keys):
   table_data = []
   student_row_index_map = {} # Map of student_key to row in the table_data
   assignment_col_index_map = {} # Map of assignment_key to column in the table_data
@@ -283,9 +281,6 @@ def get_csv_export_lists(user, export_student_name, export_rose_username,
     num_columns += 1
   if export_team:
     header_row.append("Team")
-    num_columns += 1
-  if export_email:
-    header_row.append("Email")
     num_columns += 1
 
   # Assignment Prep
@@ -314,10 +309,8 @@ def get_csv_export_lists(user, export_student_name, export_rose_username,
       current_row.append(student.rose_username)
     if export_team:
       current_row.append(student.team)
-    if export_email:
-      current_row.append(student.rose_username + "@" + email_domain)
     for i in range(num_assignments_found):
-      current_row.append("")
+      current_row.append("-")
     table_data.append(current_row)
     student_row_index_map[student.key] = num_rows
     num_rows += 1

@@ -145,7 +145,10 @@ rh.gr.enableButtons = function() {
 
 	$("#select-all-assignments").click(function() {
 		$("#assignments-export-table input[type=checkbox]").prop("checked", true);
+	});
 
+	$("#download-csv").click(function() {
+		$("#export-grades-modal").removeClass("fade").modal("hide");
 	});
 };
 

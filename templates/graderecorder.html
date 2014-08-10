@@ -449,42 +449,33 @@
                 <th>Student Fields <a href="#" id="select-all-student-fields">(select all)</a></th>
               </thead>
               <tbody>
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" name="student_name">Student name (First, Last)
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" name="rose_username">Username
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" name="team">Team
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" checked=true name="email">Email username@<input type="text" name="email_domain" placeholder="domain.edu" value="rose-hulman.edu">
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="student_name">Student name (First, Last)
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" checked=true name="rose_username">Username
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="team">Team
+                      </label>
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
             <table id="assignments-export-table" class="table table-striped">
@@ -510,7 +501,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary">Download CSV</button>
+            <button id="download-csv" type="submit" class="btn btn-primary">Download CSV</button>
           </div>
         </form>
       </div>
