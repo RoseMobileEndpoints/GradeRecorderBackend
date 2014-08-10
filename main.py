@@ -322,6 +322,14 @@ def get_csv_export_lists(user, export_student_name, export_rose_username,
       row = student_row_index_map[grade.student_key]
       col = assignment_col_index_map[grade.assignment_key]
       table_data[row][col] = grade.score
+
+  # Removing rows with no grades (allows for data merging)
+  for row_index in reversed(range(1, num_rows)):
+    row = table_data[row_index]
+    blank_grades = row.count("-")
+    if blank_grades == num_assignments_found:
+      table_data.remove(row)
+
   return table_data
 
 app = webapp2.WSGIApplication([
