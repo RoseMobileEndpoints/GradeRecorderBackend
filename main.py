@@ -245,26 +245,91 @@ class DeleteGradeEntryAction(webapp2.RequestHandler):
 
 class ExportCsvAction(webapp2.RequestHandler):
   def post(self):
-    exportStudentName = len(self.request.get("student_name")) > 0
-    exportRoseUsername = len(self.request.get("rose_username")) > 0
-    exportTeam = len(self.request.get("team")) > 0
-    exportEmail = len(self.request.get("email")) > 0
-    emailDomain = self.request.get("email_domain")
-    assignmentKeys = self.request.get_all("assignment_keys[]")
-    logging.info("exportStudentName = " + str(exportStudentName))
-    logging.info("exportRoseUsername = " + str(exportRoseUsername))
-    logging.info("exportTeam = " + str(exportTeam))
-    logging.info("exportEmail = " + str(exportEmail))
-    logging.info("emailDomain = " + emailDomain)
-
-    logging.info("assignmentKeys = " + str(assignmentKeys))
-
-
+    user = users.get_current_user()
+    if not user:
+        self.redirect(users.create_login_url(self.request.uri))
+        return
+    export_student_name = len(self.request.get("student_name")) > 0
+    export_rose_username = len(self.request.get("rose_username")) > 0
+    export_team = len(self.request.get("team")) > 0
+    export_email = len(self.request.get("email")) > 0
+    email_domain = self.request.get("email_domain")
+    urlsafe_assignment_keys = self.request.get_all("assignment_keys[]")
+    csv_data = get_csv_export_lists(user, export_student_name, export_rose_username,
+                                    export_team, export_email, email_domain,
+                                    urlsafe_assignment_keys)
     self.response.headers['Content-Type'] = 'application/csv'
     writer = csv.writer(self.response.out)
-    writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
-    writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
-    writer.writerow(["Username", "First", "Last", "Team", "Assignment 1", "Assignment 2"])
+    for csv_row in csv_data:
+      writer.writerow(csv_row)
+
+def get_csv_export_lists(user, export_student_name, export_rose_username,
+                         export_team, export_email, email_domain,
+                         urlsafe_assignment_keys):
+  table_data = []
+  student_row_index_map = {} # Map of student_key to row in the table_data
+  assignment_col_index_map = {} # Map of assignment_key to column in the table_data
+  header_row = []
+  table_data.append(header_row)
+  num_columns = 0
+
+  # Student Header
+  if export_student_name:
+    header_row.append("First")
+    header_row.append("Last")
+    num_columns += 2
+  if export_rose_username:
+    header_row.append("Username")
+    num_columns += 1
+  if export_team:
+    header_row.append("Team")
+    num_columns += 1
+  if export_email:
+    header_row.append("Email")
+    num_columns += 1
+
+  # Assignment Prep
+  assignment_keys = []
+  for urlsafe_assignment_key in urlsafe_assignment_keys:
+    assignment_keys.append(ndb.Key(urlsafe=urlsafe_assignment_key))
+  assignments = ndb.get_multi(assignment_keys)
+  assignments.sort(key=lambda assignment: assignment.name)
+  num_assignments_found = 0
+  for assignment in assignments:
+    if assignment:
+      header_row.append(assignment.name)
+      assignment_col_index_map[assignment.key] = num_columns
+      num_columns += 1
+      num_assignments_found += 1
+
+  # Student Data + assignment placeholders
+  num_rows = 1
+  students = Student.query(ancestor=get_parent_key(user)).order(Student.rose_username)
+  for student in students:
+    current_row = []
+    if export_student_name:
+      current_row.append(student.first_name)
+      current_row.append(student.last_name)
+    if export_rose_username:
+      current_row.append(student.rose_username)
+    if export_team:
+      current_row.append(student.team)
+    if export_email:
+      current_row.append(student.rose_username + "@" + email_domain)
+    for i in range(num_assignments_found):
+      current_row.append("")
+    table_data.append(current_row)
+    student_row_index_map[student.key] = num_rows
+    num_rows += 1
+
+  # Add the grades
+  grade_query = GradeEntry.query(ancestor=get_parent_key(user))
+  for grade in grade_query:
+    if grade.student_key in student_row_index_map and grade.assignment_key in assignment_col_index_map:
+      row = student_row_index_map[grade.student_key]
+      col = assignment_col_index_map[grade.assignment_key]
+      table_data[row][col] = grade.score
+  return table_data
 
 app = webapp2.WSGIApplication([
     ("/", MainHandler),

@@ -203,6 +203,4 @@ $(document).ready(function() {
 		}
 	    localStorage.removeItem("showGradeEntryEditDelete");
 	};
-
-	$("#export-grades-modal").modal("show");
 });
