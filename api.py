@@ -10,19 +10,19 @@ import main
 from models import Student, Assignment, GradeEntry
 import protorpc
 
+# For my Android client package identifier edu.rosehulman.GradeRecorder
+WEB_CLIENT_ID = "3607967651-5nqg6qis8ivo294oenp8nff9k35dp70h.apps.googleusercontent.com"
+ANDROID_CLIENT_ID = "3607967651-c2e2v3mvtktm0mt7l08m3qafvcg7m7me.apps.googleusercontent.com"
+IOS_CLIENT_ID = ""
 
 # For https://me430-grade-recorder.appspot.com
 CLIENT_ID_WEB_APP = '260346932481.apps.googleusercontent.com'
-
 # For my iOS client.  Expected bundle identifier edu.rosehulman.Grade-Recorder
 CLIENT_ID_IOS = '260346932481-da10f7trblkq1vpcbq9qsje35tt056g3.apps.googleusercontent.com'
-
-# For my Android client package identifier edu.rosehulman.GradeRecorder
-# CLIENT_ID_ANDROID = ''
-
+#               hostname="me430-grade-recorder.appspot.com", audiences=[WEB_CLIENT_ID],
 
 @endpoints.api(name="graderecorder", version="v1", description="Grade Recorder API",
-               hostname="me430-grade-recorder.appspot.com", audiences=[CLIENT_ID_WEB_APP],
+               hostname="boutell-grade-recorder-2.appspot.com", audiences=[CLIENT_ID_WEB_APP],
                allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID, CLIENT_ID_WEB_APP, CLIENT_ID_IOS])
 class GradeRecorderApi(protorpc.remote.Service):
 
