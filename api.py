@@ -5,7 +5,6 @@ Created on Jul 16, 2014
 '''
 
 import endpoints
-from google.appengine.ext import ndb
 import main
 from models import Student, Assignment, GradeEntry
 import protorpc
@@ -16,14 +15,17 @@ ANDROID_CLIENT_ID = "3607967651-c2e2v3mvtktm0mt7l08m3qafvcg7m7me.apps.googleuser
 IOS_CLIENT_ID = ""
 
 # For https://me430-grade-recorder.appspot.com
-CLIENT_ID_WEB_APP = '260346932481.apps.googleusercontent.com'
+#CLIENT_ID_WEB_APP = '260346932481.apps.googleusercontent.com'
 # For my iOS client.  Expected bundle identifier edu.rosehulman.Grade-Recorder
-CLIENT_ID_IOS = '260346932481-da10f7trblkq1vpcbq9qsje35tt056g3.apps.googleusercontent.com'
+#CLIENT_ID_IOS = '260346932481-da10f7trblkq1vpcbq9qsje35tt056g3.apps.googleusercontent.com'
 #               hostname="me430-grade-recorder.appspot.com", audiences=[WEB_CLIENT_ID],
+#               allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID, CLIENT_ID_WEB_APP, CLIENT_ID_IOS])
+
 
 @endpoints.api(name="graderecorder", version="v1", description="Grade Recorder API",
-               hostname="boutell-grade-recorder-2.appspot.com", audiences=[CLIENT_ID_WEB_APP],
-               allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID, CLIENT_ID_WEB_APP, CLIENT_ID_IOS])
+               hostname="boutell-grade-recorder-2.appspot.com", audiences=[WEB_CLIENT_ID],
+               allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID, ANDROID_CLIENT_ID, WEB_CLIENT_ID, IOS_CLIENT_ID])
+
 class GradeRecorderApi(protorpc.remote.Service):
 
     # List methods
