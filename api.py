@@ -5,7 +5,6 @@ Created on Jul 16, 2014
 '''
 
 import endpoints
-from google.appengine.ext import ndb
 import main
 from models import Student, Assignment, GradeEntry
 import protorpc
@@ -13,6 +12,8 @@ import protorpc
 # For my Android client package identifier edu.rosehulman.GradeRecorder
 WEB_CLIENT_ID = ""
 ANDROID_CLIENT_ID = ""
+
+# For my iOS client package identifier edu.rosehulman.Grade-Recorder
 IOS_CLIENT_ID = ""
 
 @endpoints.api(name="graderecorder", version="v1", description="Grade Recorder API",
