@@ -7,13 +7,14 @@ class Student(EndpointsModel):
     first_name = ndb.StringProperty()
     last_name = ndb.StringProperty()
     rose_username = ndb.StringProperty()
-    team = ndb.StringProperty()
+    team = ndb.StringProperty(default="None")
 
 
 class Assignment(EndpointsModel):
     """ Assignment. """
     _message_fields_schema = ("entityKey", "name")
     name = ndb.StringProperty()
+
 
 class GradeEntry(EndpointsModel):
     """ Score for a student on an assignment. """
