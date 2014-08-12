@@ -14,7 +14,7 @@ WEB_CLIENT_ID = ""
 ANDROID_CLIENT_ID = ""
 
 # For my iOS client package identifier edu.rosehulman.Grade-Recorder
-IOS_CLIENT_ID = ""
+IOS_CLIENT_ID = "474480234891-cjngpg1c2n09dkmia2f4m3j5ag3lr1i2.apps.googleusercontent.com"
 
 @endpoints.api(name="graderecorder", version="v1", description="Grade Recorder API",
                hostname="fisherds-grade-recorder.appspot.com", audiences=[WEB_CLIENT_ID],
