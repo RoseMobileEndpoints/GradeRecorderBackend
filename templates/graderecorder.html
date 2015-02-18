@@ -90,7 +90,7 @@
               <span class="badge">
                 {{ assignment_badge_data[assignment.key][0] }}
                 {% if assignment_badge_data[assignment.key][0] > 0 %}
-                  ({{ assignment_badge_data[assignment.key][2] }})
+                  ({{ assignment_badge_data[assignment.key][2]|one_decimal_point_format }})
                 {% endif %}
               </span>
               <span class="assignment-name">{{assignment.name}}</span>

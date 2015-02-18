@@ -18,11 +18,15 @@ import os
 
 from handlers import main_page_handler, insert_handlers, delete_handlers, csv_handlers
 import jinja2
+import utils
 import webapp2
+
 
 # Jinja environment instance necessary to use Jinja templates.
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
                                autoescape=True)
+jinja_env.filters["one_decimal_point_format"] = utils.one_decimal_point_format
+
 
 app = webapp2.WSGIApplication([
     ("/", main_page_handler.GradeRecorderPage),

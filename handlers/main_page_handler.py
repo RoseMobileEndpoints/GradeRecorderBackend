@@ -16,8 +16,12 @@ class GradeRecorderPage(webapp2.RequestHandler):
     for assignment in assignments:
       assignment_badge_data[assignment.key] = [0, 0]  # Accumulator for [Total Count, Total Score]
     for grade_entry in grade_entries:
-      assignment_badge_data[grade_entry.assignment_key][0] += 1
-      assignment_badge_data[grade_entry.assignment_key][1] += grade_entry.score
+      try:
+        grade_as_float = float(grade_entry.score)
+        assignment_badge_data[grade_entry.assignment_key][0] += 1
+        assignment_badge_data[grade_entry.assignment_key][1] += grade_as_float
+      except ValueError:
+        continue
     for assignment in assignments:
       metadata = assignment_badge_data[assignment.key]
       if metadata[0] > 0:

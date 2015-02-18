@@ -60,3 +60,13 @@ def remove_all_students(user):
   for student in all_students_query:
     student.key.delete()
 
+
+def one_decimal_point_format(value):
+  try:
+    rounded_value = round(value, 1)
+    if rounded_value * 10 % 10 == 0:
+      return "%.0f" % rounded_value
+    return "%.1f" % rounded_value
+  except:
+    return value
+

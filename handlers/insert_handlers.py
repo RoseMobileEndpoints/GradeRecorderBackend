@@ -40,7 +40,7 @@ class AddSingleGradeEntryAction(webapp2.RequestHandler):
     assignment_key = ndb.Key(urlsafe=self.request.get('assignment_key'))
     student_key = ndb.Key(urlsafe=self.request.get('student_key'))
     student = student_key.get()
-    score = int(self.request.get('score'))
+    score = self.request.get('score')
     new_grade_entry = GradeEntry(parent=assignment_key,
                                  id=student.rose_username,
                                  assignment_key=assignment_key,
@@ -54,7 +54,7 @@ class AddTeamGradeEntryAction(webapp2.RequestHandler):
   def post(self):
     user = users.get_current_user()
     assignment_key = ndb.Key(urlsafe=self.request.get('assignment_key'))
-    score = int(self.request.get('score'))
+    score = self.request.get('score')
     team = self.request.get('team')
     student_query = Student.query(Student.team==team, ancestor=utils.get_parent_key(user))
     for student in student_query:
