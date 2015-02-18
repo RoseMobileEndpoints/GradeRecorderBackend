@@ -5,11 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grade Recorder</title>
-  <link rel="stylesheet" href="/static/stylesheets/bootstrap.min.css">
-  <!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
-
-  <link rel="stylesheet" href="/static/stylesheets/bootstrap-theme.min.css">
-  <link rel="stylesheet" href="/static/stylesheets/dataTables.bootstrap.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.css">
   <link rel="stylesheet" href="/static/stylesheets/offcanvas.css">
   <link rel="stylesheet" href="/static/stylesheets/graderecorder.css">
 </head>
@@ -86,9 +84,9 @@
       </div>
       <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
         <div id="assignment-sidebar" class="list-group">
-          <a href="#" id="" class="sidebar-link list-group-item {% if not active_assignemnt %}active{% endif %}">Show all assignments</a>
+          <a href="#" id="" class="sidebar-link list-group-item {% if not active_assignment %}active{% endif %}">Show all assignments</a>
           {% for assignment in assignments %}
-            <a href="#" id="{{ assignment.key.urlsafe() }}" class="clearfix sidebar-link list-group-item {% if active_assignemnt == assignment.key.urlsafe() %}active{% endif %}">
+            <a href="#" id="{{ assignment.key.urlsafe() }}" class="clearfix sidebar-link list-group-item {% if active_assignment == assignment.key.urlsafe() %}active{% endif %}">
               <span class="badge">
                 {{ assignment_badge_data[assignment.key][0] }}
                 {% if assignment_badge_data[assignment.key][0] > 0 %}
@@ -129,7 +127,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="h4 modal-title" id="add-student-modal-title">Add Student</div>
         </div>
-        <form action="" method="POST" class="form-horizontal" role="form">
+        <form action="/add_student" method="POST" class="form-horizontal" role="form">
           <div class="modal-body">
             <div class="form-group">
               <label for="first_name" class="col-sm-2 control-label">First:</label>
@@ -155,7 +153,6 @@
                 <input name="team" type="text" class="form-control" placeholder="Team (if applicable)">
               </div>
             </div>
-            <input type="hidden" name="type" value="Student">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -175,7 +172,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="assignment-modal-title">Import Roster</h4>
+          <h4 class="modal-title">Import Roster</h4>
         </div>
         <form class="form-horizontal" action="/bulk_student_import" method="POST" enctype="multipart/form-data">
           <input type="file" class="hidden" name="bulk-import-file" id="bulk-import-file-upload-chooser" onchange="this.form.submit()" accept="text/csv">
@@ -344,9 +341,9 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="assignment-modal-title">Add Assignment</h4>
+          <h4 class="modal-title">Add Assignment</h4>
         </div>
-        <form class="form-horizontal" action="" method="POST">
+        <form class="form-horizontal" action="/insert_assignment" method="POST">
           <div class="modal-body">
             <div class="form-group">
               <label for="assignment_name" class="col-sm-2 control-label">Name:</label>
@@ -355,7 +352,6 @@
                 <input name="assignment_entity_key" type="text" class="hidden">
               </div>
             </div>
-            <input type="hidden" name="type" value="Assignment">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -382,9 +378,8 @@
             </div>
           </div>
         </div>
-        <form class="form-horizontal" action="" method="POST">
+        <form id="add-grade-entry-form" class="form-horizontal" action="/add_single_grade_entry" method="POST">
           <div class="modal-body">
-            <input id="grade-entry-type-input" type="hidden" name="type" value="SingleGradeEntry">
             <div id="grade-entry-by-student-form-group" class="form-group">
               <label for="student_key" class="col-sm-3 control-label">Student:</label>
               <div class="col-sm-9">
@@ -513,10 +508,10 @@
 
   <!-- ========================== Bootstrap core JavaScript ========================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="/static/js/jquery-2.0.3.min.js"></script>
-  <script src="/static/js/bootstrap.min.js"></script>
-  <script src="/static/js/jquery.dataTables.js"></script>
-  <script src="/static/js/dataTables.bootstrap.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+  <script src="//cdn.datatables.net/plug-ins/725b2a2115b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
   <script src="/static/js/offcanvas.js"></script>
   <script>
         var columns = [
@@ -535,9 +530,9 @@
           { "title": "Team", "class": "hidden-xs"},
           { "title": "Score", "class": "text-center"},
           { "title": "Actions",
-        	"class": "grade-entry-actions hidden hidden-xs",
-        	"render": function(data, type, full, meta) {
-        	  if (type == "display") {
+          "class": "grade-entry-actions hidden hidden-xs",
+          "render": function(data, type, full, meta) {
+            if (type == "display") {
                   return '<div class="btn-group">' +
                     '<button data-dismiss="modal" data-toggle="modal" data-target="#add-grade-entry-modal" type="button" class="edit-grade-entry btn btn-xs btn-success">Edit' +
                       '<div class="hidden student-key">' + data.student_key + '</div>' +
@@ -548,9 +543,9 @@
                       '<div class="hidden entity-key">' + data.entity_key + '</div>' +
                     '</button>' +
                   '</div>'
-        	  }
-        	  return ""
-        	}
+            }
+            return ""
+          }
           }
         ];
         var data = [
@@ -565,25 +560,25 @@
              "{{ grade_entry.student.team }}",
              "{{ grade_entry.score }}",
              {
-            	 "student_key": "{{ grade_entry.student_key.urlsafe() }}",
-            	 "assignment_key": "{{ grade_entry.assignment_key.urlsafe() }}",
-            	 "score": "{{ grade_entry.score }}",
-            	 "entity_key": "{{ grade_entry.key.urlsafe() }}"
+               "student_key": "{{ grade_entry.student_key.urlsafe() }}",
+               "assignment_key": "{{ grade_entry.assignment_key.urlsafe() }}",
+               "score": "{{ grade_entry.score }}",
+               "entity_key": "{{ grade_entry.key.urlsafe() }}"
              }
             ]
             {% if not loop.last %},{% endif %}
           {% endfor %}
         ];
         if ($(window).width() < 768) {
-        	$("#grade-entry-table").DataTable({
+          $("#grade-entry-table").DataTable({
                 "columns": columns,
                 "data": data,
                 "paging": false,
                 "info": false
               }).order([3, "asc"]).order([0, "asc"]).draw();
-        	$(".dataTables_filter").hide();
+          $(".dataTables_filter").hide();
         } else {
-        	$("#grade-entry-table").DataTable({
+          $("#grade-entry-table").DataTable({
                 "columns": columns,
                 "data": data,
                 "info": false

@@ -20,6 +20,7 @@ handlers:
 #Main handler
 - url: .*
   script: main.app
+  login: required
 
 libraries:
 - name: webapp2

@@ -15,26 +15,31 @@ rh.gr = rh.gr || {};
  */
 rh.gr.currentAssignmentKey = null;
 
+
+/**
+ * Register function callbacks for events.
+ */
+rh.gr.attachEventHandlers = function() {
+  $('#add-student-modal').on('shown.bs.modal', function() {
+    $("input[name='first_name']").focus();
+  });
+
+  $('#add-assignment-modal').on('shown.bs.modal', function() {
+    $("input[name='assignment_name']").focus();
+  });
+
+  $('#add-grade-entry-modal').on('shown.bs.modal', function() {
+    if (rh.gr.currentAssignmentKey.length > 0) {
+      $("select[name=assignment_key]").val(rh.gr.currentAssignmentKey);
+    }
+    $("input[name='score']").focus();
+  });
+};
+
 /**
  * Enables the button callbacks in the UI.
  */
 rh.gr.enableButtons = function() {
-	$('#add-student-modal').on('shown.bs.modal', function() {
-		$("input[name='first_name']").focus();
-	});
-
-	$('#add-assignment-modal').on('shown.bs.modal', function() {
-		$("input[name='assignment_name']").focus();
-	});
-
-	$('#add-grade-entry-modal').on('shown.bs.modal', function() {
-		// CONSIDER: Attempt to guess the next student needing a grade.
-		if (rh.gr.currentAssignmentKey.length > 0) {
-			$("select[name=assignment_key]").val(rh.gr.currentAssignmentKey);
-		}
-		$("input[name='score']").focus();
-	});
-
 	$("#toggle-edit-assignments").click(function() {
 		$(".assignment-actions").toggleClass("hidden");
 	});
@@ -55,13 +60,13 @@ rh.gr.enableButtons = function() {
 	});
 
 	$("#add-grade-by-student").click(function() {
-		$("#grade-entry-type-input").val("SingleGradeEntry");
+		$("#add-grade-entry-form").attr("action", "/add_single_grade_entry");
 		$("#grade-entry-by-student-form-group").show();
 		$("#grade-entry-by-team-form-group").hide();
 	});
 
 	$("#add-grade-by-team").click(function() {
-		$("#grade-entry-type-input").val("TeamGradeEntry");
+    $("#add-grade-entry-form").attr("action", "/add_team_grade_entry");
 		$("#grade-entry-by-student-form-group").hide();
 		$("#grade-entry-by-team-form-group").show();
 	});
@@ -155,6 +160,7 @@ rh.gr.enableButtons = function() {
 rh.gr.updateTable = function() {
 	var table = $('#grade-entry-table').DataTable();
 	table.search(rh.gr.currentAssignmentKey).draw();
+	$("input[type=search]").val("");
 };
 
 rh.gr.updatePageTitle = function() {
@@ -179,6 +185,7 @@ rh.gr.toggleGradeEntryModeSwitchDisplay = function() {
 // Navigation of grade entries.
 $(document).ready(function() {
 	rh.gr.enableButtons();
+	rh.gr.attachEventHandlers();
 	rh.gr.currentAssignmentKey = $('.sidebar-link.active').attr('id');
 	rh.gr.updateTable();
 	rh.gr.updatePageTitle();
