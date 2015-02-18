@@ -1,6 +1,7 @@
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb.model import EndpointsModel
 
+
 class Course(EndpointsModel):
   """ Course. """
   _message_fields_schema = ("entityKey", "title", "academic_quarter", "owner_email", "grader_emails")
@@ -8,6 +9,11 @@ class Course(EndpointsModel):
   academic_quarter = ndb.StringProperty()
   owner_email = ndb.StringProperty()
   grader_emails = ndb.StringProperty(repeated=True)
+
+
+class UserDefaults(EndpointsModel):
+  """ Holds default values for this user. """
+  default_course_key = ndb.KeyProperty(kind=Course)
 
 
 class Student(EndpointsModel):

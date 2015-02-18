@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
-from models import Assignment, Student, GradeEntry
+from google.net.proto.ProtocolBuffer import ProtocolBufferDecodeError
+from models import Assignment, Student, GradeEntry, UserDefaults
 
 
 def get_parent_key(user):
@@ -59,6 +60,30 @@ def remove_all_students(user):
   all_students_query = Student.query(ancestor=get_parent_key(user))
   for student in all_students_query:
     student.key.delete()
+
+
+def get_course_from_key(course_url_key):
+    if len(course_url_key) > 0:
+      try:
+        course_key = ndb.Key(urlsafe=course_url_key)
+        return course_key.get()
+      except ProtocolBufferDecodeError:
+        return None
+    return None
+
+
+def get_default_course_for_user(user):
+  """ Gets the last course this user modified if any. """
+  user_defaults = UserDefaults.query(ancestor=get_parent_key(user)).get()
+  if user_defaults:
+    course_key = user_defaults.default_course_key
+    return get_course_from_key(course_key)
+
+
+def get_any_course_for_user(user):
+  """ Searches for any course connected to this user and returns it. """
+  # TODO: Implement
+  pass
 
 
 def one_decimal_point_format(value):
