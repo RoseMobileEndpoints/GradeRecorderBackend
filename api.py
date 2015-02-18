@@ -1,7 +1,7 @@
 import endpoints
-import main
 from models import Student, Assignment, GradeEntry
 import protorpc
+import utils
 
 
 # For https://me430-grade-recorder.appspot.com
@@ -15,7 +15,7 @@ CLIENT_ID_IOS = '260346932481-da10f7trblkq1vpcbq9qsje35tt056g3.apps.googleuserco
 
 
 @endpoints.api(name="graderecorder", version="v1", description="Grade Recorder API",
-               hostname="me430-grade-recorder.appspot.com", audiences=[CLIENT_ID_WEB_APP],
+               audiences=[CLIENT_ID_WEB_APP],
                allowed_client_ids=[endpoints.API_EXPLORER_CLIENT_ID, CLIENT_ID_WEB_APP, CLIENT_ID_IOS])
 class GradeRecorderApi(protorpc.remote.Service):
 
@@ -25,7 +25,7 @@ class GradeRecorderApi(protorpc.remote.Service):
     def student_list(self, query):
         """ List all the students for this user """
         user = endpoints.get_current_user()
-        students = Student.query(ancestor=main.get_parent_key(user)).order(Student.rose_username)
+        students = Student.query(ancestor=utils.get_parent_key(user)).order(Student.rose_username)
         return students
 
     @Assignment.query_method(user_required=True, query_fields=("limit", "pageToken"),
@@ -33,7 +33,7 @@ class GradeRecorderApi(protorpc.remote.Service):
     def assignment_list(self, query):
         """ List all the assignments owned by the user """
         user = endpoints.get_current_user()
-        assignments = Assignment.query(ancestor=main.get_parent_key(user)).order(Assignment.name)
+        assignments = Assignment.query(ancestor=utils.get_parent_key(user)).order(Assignment.name)
         return assignments
 
     @GradeEntry.query_method(user_required=True, query_fields=("limit", "order", "pageToken", "assignment_key"),
@@ -50,7 +50,7 @@ class GradeRecorderApi(protorpc.remote.Service):
         if assignment.from_datastore:
             assignment_with_parent = assignment
         else:
-            assignment_with_parent = Assignment(parent = main.get_parent_key(endpoints.get_current_user()),
+            assignment_with_parent = Assignment(parent = utils.get_parent_key(endpoints.get_current_user()),
                                                 name = assignment.name)
         assignment_with_parent.put()
         return assignment_with_parent
