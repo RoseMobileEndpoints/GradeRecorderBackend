@@ -1,11 +1,4 @@
-'''
-Created on Jul 16, 2014
-
-@author: Matt Boutell
-'''
-
 import endpoints
-from google.appengine.ext import ndb
 import main
 from models import Student, Assignment, GradeEntry
 import protorpc
