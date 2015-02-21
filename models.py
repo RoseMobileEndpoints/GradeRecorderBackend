@@ -11,11 +11,6 @@ class Course(EndpointsModel):
   grader_emails = ndb.StringProperty(repeated=True)
 
 
-class UserDefaults(EndpointsModel):
-  """ Holds default values for this user. """
-  default_course_key = ndb.KeyProperty(kind=Course)
-
-
 class Student(EndpointsModel):
   """ Student. """
   _message_fields_schema = ("entityKey", "first_name", "last_name", "rose_username", "team")
@@ -37,3 +32,9 @@ class GradeEntry(EndpointsModel):
   score = ndb.StringProperty()
   student_key = ndb.KeyProperty(kind=Student)
   assignment_key = ndb.KeyProperty(kind=Assignment)
+
+
+class UserState(EndpointsModel):
+  """ Keeps a reference to the most recent course and assignment for this user. """
+  active_course_key = ndb.KeyProperty(kind=Course)
+  active_assignment_key = ndb.KeyProperty(kind=Assignment)
