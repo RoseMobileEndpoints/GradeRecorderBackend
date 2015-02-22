@@ -61,7 +61,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">Add Course</h4>
         </div>
-        <form class="form-horizontal" action="/insert_course" method="POST">
+        <form class="form-horizontal" action="/action/insert_course" method="POST">
           <div class="modal-body">
             <div class="form-group">
               <label for="title" class="col-sm-2 control-label">Title:</label>
@@ -78,7 +78,7 @@
             <div class="form-group">
               <label for="grader_emails" class="col-sm-2 control-label">Graders:</label>
               <div class="col-sm-10">
-                <input name="grader_emails" type="text" class="form-control" placeholder="Comma separated list of grader emails (gmail/google accounts)">
+                <input name="grader_emails" type="text" class="form-control" placeholder="Blank if none or comma separated list of emails (google accounts)">
               </div>
             </div>
           </div>
@@ -99,5 +99,6 @@
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="/static/js/graderecorder.js"></script>
 </body>
 </html>

@@ -4,10 +4,9 @@ from endpoints_proto_datastore.ndb.model import EndpointsModel
 
 class Course(EndpointsModel):
   """ Course. """
-  _message_fields_schema = ("entityKey", "title", "academic_quarter", "owner_email", "grader_emails")
+  _message_fields_schema = ("entityKey", "title", "academic_quarter", "grader_emails")
   title = ndb.StringProperty()
   academic_quarter = ndb.StringProperty()
-  owner_email = ndb.StringProperty()
   grader_emails = ndb.StringProperty(repeated=True)
 
 
@@ -36,5 +35,5 @@ class GradeEntry(EndpointsModel):
 
 class UserState(EndpointsModel):
   """ Keeps a reference to the most recent course and assignment for this user. """
-  active_course_key = ndb.KeyProperty(kind=Course)
-  active_assignment_key = ndb.KeyProperty(kind=Assignment)
+  course_key = ndb.KeyProperty(kind=Course)
+  assignment_key = ndb.KeyProperty(kind=Assignment)

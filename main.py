@@ -27,16 +27,16 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__
                                autoescape=True)
 jinja_env.filters["one_decimal_point_format"] = utils.one_decimal_point_format
 
-
 app = webapp2.WSGIApplication([
     ("/", main_page_handler.GradeRecorderPage),
-    ("/add_student", insert_handlers.AddStudentAction),
-    ("/insert_assignment", insert_handlers.InsertAssignmentAction),
-    ("/add_single_grade_entry", insert_handlers.AddSingleGradeEntryAction),
-    ("/add_team_grade_entry", insert_handlers.AddTeamGradeEntryAction),
-    ("/delete_student", delete_handlers.DeleteStudentAction),
-    ("/delete_assignment", delete_handlers.DeleteAssignmentAction),
-    ("/delete_grade_entry", delete_handlers.DeleteGradeEntryAction),
-    ("/bulk_student_import", csv_handlers.BulkStudentImportAction),
-    ("/grade_recorder_grades.csv", csv_handlers.ExportCsvAction)
+    ("/action/insert_course", insert_handlers.InsertCourseAction),
+    ("/action/add_student", insert_handlers.AddStudentAction),
+    ("/action/insert_assignment", insert_handlers.InsertAssignmentAction),
+    ("/action/add_single_grade_entry", insert_handlers.AddSingleGradeEntryAction),
+    ("/action/add_team_grade_entry", insert_handlers.AddTeamGradeEntryAction),
+    ("/action/delete_student", delete_handlers.DeleteStudentAction),
+    ("/action/delete_assignment", delete_handlers.DeleteAssignmentAction),
+    ("/action/delete_grade_entry", delete_handlers.DeleteGradeEntryAction),
+    ("/action/bulk_student_import", csv_handlers.BulkStudentImportAction),
+    ("/action/grade_recorder_grades.csv", csv_handlers.ExportCsvAction)
 ], debug=True)

@@ -31,5 +31,5 @@ class DeleteGradeEntryAction(webapp2.RequestHandler):
     grade = grade_entry_key.get()
     urlsafe_assignment_key = grade.assignment_key.urlsafe()
     grade_entry_key.delete();
-    self.redirect("/?active_assignment=" + urlsafe_assignment_key)
+    self.redirect("/?assignment=" + urlsafe_assignment_key)
 

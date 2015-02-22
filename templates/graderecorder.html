@@ -113,7 +113,7 @@
     </div>
   </div>
 
-  <form id="delete-grade-entry-form" class="hidden" action="/delete_grade_entry" method="POST">
+  <form id="delete-grade-entry-form" class="hidden" action="/action/delete_grade_entry" method="POST">
     <input name="grade_entry_to_delete_key">
   </form>
 
@@ -127,7 +127,8 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="h4 modal-title" id="add-student-modal-title">Add Student</div>
         </div>
-        <form action="/add_student" method="POST" class="form-horizontal" role="form">
+        <form action="/action/add_student" method="POST" class="form-horizontal" role="form">
+          <input name="course_key" type="text" value="{{ course.key.urlsafe() }}" class="hidden">
           <div class="modal-body">
             <div class="form-group">
               <label for="first_name" class="col-sm-2 control-label">First:</label>
@@ -174,7 +175,8 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">Import Roster</h4>
         </div>
-        <form class="form-horizontal" action="/bulk_student_import" method="POST" enctype="multipart/form-data">
+        <form class="form-horizontal" action="/action/bulk_student_import" method="POST" enctype="multipart/form-data">
+          <input name="course_key" type="text" value="{{ course.key.urlsafe() }}" class="hidden">
           <input type="file" class="hidden" name="bulk-import-file" id="bulk-import-file-upload-chooser" onchange="this.form.submit()" accept="text/csv">
           <div class="modal-body">
             <p>The .CSV roster file must have the columns "<b>Username</b>", "<b>Last</b>", "<b>First</b>" and can optionally add "<b>Team</b>". Here is a simple example .CSV roster file: <br><div class="file-link"><a href="/static/files/simple_roster.csv">simple_roster.csv</a></div></p>
@@ -289,7 +291,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title" id="delete-student-modal-title">Delete Student</h4>
         </div>
-        <form class="form-horizontal" action="/delete_student" method="POST">
+        <form class="form-horizontal" action="/action/delete_student" method="POST">
           <input type="hidden" name="student_to_delete_key">
           <div class="modal-body">
             <div class="delete-modal-body">Are you sure you wish to delete <b><span id="delete-student-name"></span></b>?<br>
@@ -316,7 +318,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title" id="delete-assignment-modal-title">Delete Assignment</h4>
         </div>
-        <form class="form-horizontal" action="/delete_assignment" method="POST">
+        <form class="form-horizontal" action="/action/delete_assignment" method="POST">
           <input type="hidden" name="assignment_to_delete_key">
           <div class="modal-body">
             <div class="delete-modal-body">Are you sure you wish to delete <b><span id="delete-assignment-name"></span></b>?<br>
@@ -343,7 +345,8 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">Add Assignment</h4>
         </div>
-        <form class="form-horizontal" action="/insert_assignment" method="POST">
+        <form class="form-horizontal" action="/action/insert_assignment" method="POST">
+          <input name="course_key" type="text" value="{{ course.key.urlsafe() }}" class="hidden">
           <div class="modal-body">
             <div class="form-group">
               <label for="assignment_name" class="col-sm-2 control-label">Name:</label>
@@ -378,7 +381,8 @@
             </div>
           </div>
         </div>
-        <form id="add-grade-entry-form" class="form-horizontal" action="/add_single_grade_entry" method="POST">
+        <form id="add-grade-entry-form" class="form-horizontal" action="/action/add_single_grade_entry" method="POST">
+          <input name="course_key" type="text" value="{{ course.key.urlsafe() }}" class="hidden">
           <div class="modal-body">
             <div id="grade-entry-by-student-form-group" class="form-group">
               <label for="student_key" class="col-sm-3 control-label">Student:</label>
@@ -433,7 +437,7 @@
   <div id='export-grades-modal' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Export grades" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form action="/grade_recorder_grades.csv" method="POST">
+        <form action="/action/grade_recorder_grades.csv" method="POST">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Export Grades</h4>

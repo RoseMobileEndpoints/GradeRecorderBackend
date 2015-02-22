@@ -17,7 +17,12 @@ handlers:
 - url: /_ah/spi/.*
   script: api.app
 
-#Main handler
+# Actions (posts) handler
+- url: /action/.*
+  script: main.app
+  login: required
+
+# Main handler
 - url: .*
   script: main.app
 

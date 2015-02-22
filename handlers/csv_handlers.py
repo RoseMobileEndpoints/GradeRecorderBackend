@@ -19,7 +19,7 @@ class BulkStudentImportAction(webapp2.RequestHandler):
     process_roster(imported_file, user)
     self.redirect(self.request.referer)
 
-def process_roster(imported_file, user):
+def process_roster(imported_file, course_key):
   try:
     csv_file = cStringIO.StringIO(imported_file)
     # Read the first kb to ensure the file is a valid CSV file.
@@ -32,7 +32,7 @@ def process_roster(imported_file, user):
                        for field in reader.fieldnames]
   for row in reader:
     rose_username = row.get("username", None)
-    new_student = Student(parent=utils.get_parent_key(user),
+    new_student = Student(parent=course_key,
                           id=rose_username,
                           first_name=row.get("first", None),
                           last_name=row.get("last", None),
@@ -55,7 +55,7 @@ class ExportCsvAction(webapp2.RequestHandler):
     for csv_row in csv_data:
       writer.writerow(csv_row)
 
-def get_csv_export_lists(user, export_student_name, export_rose_username,
+def get_csv_export_lists(course_key, export_student_name, export_rose_username,
                          export_team, urlsafe_assignment_keys):
   table_data = []
   student_row_index_map = {} # Map of student_key to row in the table_data
@@ -92,7 +92,7 @@ def get_csv_export_lists(user, export_student_name, export_rose_username,
 
   # Student Data + assignment placeholders
   num_rows = 1
-  students = Student.query(ancestor=utils.get_parent_key(user)).order(Student.rose_username)
+  students = Student.query(ancestor=course_key).order(Student.rose_username)
   for student in students:
     current_row = []
     if export_student_name:
@@ -109,7 +109,7 @@ def get_csv_export_lists(user, export_student_name, export_rose_username,
     num_rows += 1
 
   # Add the grades
-  grade_query = GradeEntry.query(ancestor=utils.get_parent_key(user))
+  grade_query = GradeEntry.query(ancestor=course_key)
   for grade in grade_query:
     if grade.student_key in student_row_index_map and grade.assignment_key in assignment_col_index_map:
       row = student_row_index_map[grade.student_key]

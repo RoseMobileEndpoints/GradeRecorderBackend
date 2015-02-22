@@ -3,22 +3,30 @@ from google.net.proto.ProtocolBuffer import ProtocolBufferDecodeError
 from models import Assignment, Student, GradeEntry, UserState
 
 
-def get_parent_key(user):
+def get_user_parent_key(user):
   return ndb.Key("Entity", user.email().lower())
 
 
-def get_assignments(user):
-  """ Gets all of the assignments for this user and makes a key map for them. """
-  assignments = Assignment.query(ancestor=get_parent_key(user)).order(Assignment.name).fetch()
+def get_user_state(user):
+  user_state = UserState.get_by_id(user.email().lower())
+  if user_state == None:
+    user_state = UserState(id=user.email().lower())
+    user_state.put()
+  return user_state
+
+
+def get_assignments(course_key):
+  """ Gets all of the assignments for this course and makes a key map for them. """
+  assignments = Assignment.query(ancestor=course_key).order(Assignment.name).fetch()
   assignments_map = {}
   for assignment in assignments:
     assignments_map[assignment.key] = assignment
   return assignments, assignments_map
 
 
-def get_students(user):
+def get_students(course_key):
   """ Gets all of the students for this user and makes a key map for them. """
-  students = Student.query(ancestor=get_parent_key(user)).order(Student.rose_username).fetch()
+  students = Student.query(ancestor=course_key).order(Student.rose_username).fetch()
   students_map = {}
   teams = []
   for student in students:
@@ -28,10 +36,10 @@ def get_students(user):
   return students, students_map, sorted(teams)
 
 
-def get_grade_entries(user, assignments_map, students_map):
+def get_grade_entries(course_key, assignments_map, students_map):
   """ Gets all of the grade entries for this user.
         Replaces the assignment_key and student_key with an assignment and student. """
-  grade_entries = GradeEntry.query(ancestor=get_parent_key(user)).fetch()
+  grade_entries = GradeEntry.query(ancestor=course_key).fetch()
   for grade_entry in grade_entries:
     grade_entry.assignment = assignments_map[grade_entry.assignment_key]
     grade_entry.student = students_map[grade_entry.student_key]
@@ -45,19 +53,19 @@ def remove_all_grades_for_assignment(user, assignment_key):
     grade.key.delete()
 
 
-def remove_all_grades_for_student(user, student_key):
+def remove_all_grades_for_student(course_key, student_key):
   """ Removes all grades for the given student. """
-  grades_for_student_query = GradeEntry.query(GradeEntry.student_key==student_key, ancestor=get_parent_key(user))
+  grades_for_student_query = GradeEntry.query(GradeEntry.student_key==student_key, ancestor=course_key)
   for grade in grades_for_student_query:
     grade.key.delete()
 
 
-def remove_all_students(user):
+def remove_all_students(course_key):
   """ Removes all grades and all students for a user. (use with caution) """
-  all_grades_query = GradeEntry.query(ancestor=get_parent_key(user))
+  all_grades_query = GradeEntry.query(ancestor=course_key)
   for grade in all_grades_query:
     grade.key.delete()
-  all_students_query = Student.query(ancestor=get_parent_key(user))
+  all_students_query = Student.query(ancestor=course_key)
   for student in all_students_query:
     student.key.delete()
 
