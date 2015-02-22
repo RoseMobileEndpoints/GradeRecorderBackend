@@ -1,6 +1,6 @@
 from google.appengine.ext import ndb
 from google.net.proto.ProtocolBuffer import ProtocolBufferDecodeError
-from models import Assignment, Student, GradeEntry, UserDefaults
+from models import Assignment, Student, GradeEntry, UserState
 
 
 def get_parent_key(user):
@@ -62,22 +62,25 @@ def remove_all_students(user):
     student.key.delete()
 
 
-def get_course_from_key(course_url_key):
-    if len(course_url_key) > 0:
-      try:
-        course_key = ndb.Key(urlsafe=course_url_key)
-        return course_key.get()
-      except ProtocolBufferDecodeError:
-        return None
+def get_assignment_and_course_from_urlsafe_assignment_key(urlsafe_assignment_key):
+  """ Gets the assignment from the urlsafe key and the associated course. """
+  try:
+    assignment_key = ndb.Key(urlsafe=urlsafe_assignment_key)
+    assignment = assignment_key.get()
+    course_key = assignment.key.parent()
+    course = course_key.get()
+    return assignment, course
+  except ProtocolBufferDecodeError:
     return None
 
 
-def get_default_course_for_user(user):
-  """ Gets the last course this user modified if any. """
-  user_defaults = UserDefaults.query(ancestor=get_parent_key(user)).get()
-  if user_defaults:
-    course_key = user_defaults.default_course_key
-    return get_course_from_key(course_key)
+def get_course_from_urlsafe_key(urlsafe_course_key):
+  """ Gets the course from the urlsafe key. """
+  try:
+    course_key = ndb.Key(urlsafe=urlsafe_course_key)
+    return course_key.get()
+  except ProtocolBufferDecodeError:
+    return None
 
 
 def get_any_course_for_user(user):
