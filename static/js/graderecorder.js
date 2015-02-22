@@ -20,7 +20,7 @@ rh.gr.currentAssignmentKey = null;
  * Register function callbacks for events.
  */
 rh.gr.attachEventHandlers = function() {
-  $('#add-course-modal').on('shown.bs.modal', function() {
+  $('#add-course-modal, #edit-course-modal').on('shown.bs.modal', function() {
     $("input[name='title']").focus();
   });
 
@@ -44,6 +44,7 @@ rh.gr.attachEventHandlers = function() {
  * Enables the button callbacks in the UI.
  */
 rh.gr.enableButtons = function() {
+
   $("#toggle-edit-assignments").click(function() {
     $(".assignment-actions").toggleClass("hidden");
   });

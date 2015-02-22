@@ -77,8 +77,9 @@ class GradeRecorderPage(webapp2.RequestHandler):
         metadata.append("na")  # Average is NA
     template = main.jinja_env.get_template("templates/graderecorder.html")
     self.response.out.write(template.render({'course': course,
+                                             'is_owner': course.key.parent() == utils.get_user_parent_key(user),
                                              'assignments': assignments,
-                                             'active_assignment': assignment.key.urlsafe(),
+                                             'active_assignment': assignment.key.urlsafe() if assignment else "",
                                              'students': students,
                                              'teams': teams,
                                              'grade_entries': grade_entries,

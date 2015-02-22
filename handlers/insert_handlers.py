@@ -22,7 +22,7 @@ class InsertCourseAction(webapp2.RequestHandler):
     if len(graders_emails) > 0:
       graders_emails_list = graders_emails.split(",")
       for grader_email in graders_emails_list:
-        course.grader_emails.append(grader_email.lower().trim())
+        course.grader_emails.append(grader_email.lower().strip())
     course.put()
     self.redirect("/?course=" + course.key.urlsafe())
 
