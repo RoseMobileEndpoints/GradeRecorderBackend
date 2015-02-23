@@ -28,10 +28,11 @@ class GradeRecorderPage(webapp2.RequestHandler):
         user_state.put()
     elif len(self.request.get("course")) > 0:
       course = utils.get_course_from_urlsafe_key(self.request.get("course"))
-      if user_state.course_key != course.key or user_state.assignment_key != None:
-        user_state.course_key = course.key
-        user_state.assignment_key = None
-        user_state.put()
+      if course != None:
+        if user_state.course_key != course.key or user_state.assignment_key != None:
+          user_state.course_key = course.key
+          user_state.assignment_key = None
+          user_state.put()
 
     if not course:
       # No query parameters. Use Priority #2 the user state.
@@ -47,8 +48,13 @@ class GradeRecorderPage(webapp2.RequestHandler):
       course = Course.query(ancestor=utils.get_user_parent_key(user)).get()
 
     if course:
-      logging.info("Got a course using that page.  Course:" + str(course))
-      self.load_page_for_course(user, course, assignment)
+      if utils.get_user_parent_key(user) == course.key.parent() or \
+          user.email().lower() in course.grader_emails or users.is_current_user_admin():
+        self.load_page_for_course(user, course, assignment)
+      else:
+        utils.clear_user_state(user) # Trying to help with a user that had the rug pulled out from under them.
+        self.response.out.write("Access denied.") # There are fancier ways to do this but this is fine.
+        return
     else:
       self.load_courseless_page(user)
 
@@ -77,7 +83,7 @@ class GradeRecorderPage(webapp2.RequestHandler):
         metadata.append("na")  # Average is NA
     template = main.jinja_env.get_template("templates/graderecorder.html")
     self.response.out.write(template.render({'course': course,
-                                             'is_owner': course.key.parent() == utils.get_user_parent_key(user),
+                                             'is_owner': course.key.parent() == utils.get_user_parent_key(user) or users.is_current_user_admin(),
                                              'assignments': assignments,
                                              'active_assignment': assignment.key.urlsafe() if assignment else "",
                                              'students': students,

@@ -34,6 +34,8 @@ app = webapp2.WSGIApplication([
     ("/action/insert_assignment", insert_handlers.InsertAssignmentAction),
     ("/action/add_single_grade_entry", insert_handlers.AddSingleGradeEntryAction),
     ("/action/add_team_grade_entry", insert_handlers.AddTeamGradeEntryAction),
+    ("/action/delete_course", delete_handlers.DeleteCourseAction),
+    ("/action/remove_user_as_grader", delete_handlers.RemoveUserAsGraderAction),
     ("/action/delete_student", delete_handlers.DeleteStudentAction),
     ("/action/delete_assignment", delete_handlers.DeleteAssignmentAction),
     ("/action/delete_grade_entry", delete_handlers.DeleteGradeEntryAction),

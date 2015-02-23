@@ -15,6 +15,14 @@ def get_user_state(user):
   return user_state
 
 
+def clear_user_state(user):
+  """ Clears the user state. """
+  user_state = UserState.get_by_id(user.email().lower())
+  user_state.course_key = None
+  user_state.assignment_key = None
+  user_state.put()
+
+
 def get_assignments(course_key):
   """ Gets all of the assignments for this course and makes a key map for them. """
   assignments = Assignment.query(ancestor=course_key).order(Assignment.name).fetch()
@@ -60,14 +68,25 @@ def remove_all_grades_for_student(course_key, student_key):
     grade.key.delete()
 
 
-def remove_all_students(course_key):
-  """ Removes all grades and all students for a user. (use with caution) """
+def delete_all_course_entities(course_key):
+  """ Removes all grades, all students, and all assignments for a course. (use with caution) """
+  remove_all_students(course_key, delete_assignments=True)
+
+
+def remove_all_students(course_key, delete_assignments=False):
+  """ Removes all grades and all students for a course. (use with caution) """
+  keys_to_delete = []
   all_grades_query = GradeEntry.query(ancestor=course_key)
   for grade in all_grades_query:
-    grade.key.delete()
+    keys_to_delete.append(grade.key)
   all_students_query = Student.query(ancestor=course_key)
   for student in all_students_query:
-    student.key.delete()
+    keys_to_delete.append(student.key)
+  if delete_assignments:
+    all_assignments_query = Assignment.query(ancestor=course_key)
+    for assignment in all_assignments_query:
+      keys_to_delete.append(assignment.key)
+  ndb.delete_multi(keys_to_delete)
 
 
 def get_assignment_and_course_from_urlsafe_assignment_key(urlsafe_assignment_key):
