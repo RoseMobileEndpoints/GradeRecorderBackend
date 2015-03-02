@@ -141,7 +141,7 @@ def get_students(user):
         students_map[student.key] = student
         if student.team not in teams:
           teams.append(student.team)
-    return students, students_map, teams
+    return students, students_map, sorted(teams)
 
 
 def get_grade_entries(user, assignments_map, students_map):
